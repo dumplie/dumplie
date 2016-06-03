@@ -1,0 +1,35 @@
+{
+    "name": "dumplie/dumplie",
+    "description": "Dumplie - simple but powerful shopping engine",
+    "type": "framework",
+    "license": "MIT",
+    "require": {
+        "php": "^7.0",
+        "ext-mbstring": "*",
+
+        "league/tactician": "^1.0",
+        "ramsey/uuid": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.3",
+        "phpspec/phpspec": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dumplie\\Test\\": "tests/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

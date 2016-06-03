@@ -1,0 +1,7 @@
+suites:
+    dumplie:
+        spec_path: ./tests/Dumplie
+        spec_prefix: Spec
+        psr4_prefix: Dumplie
+        namespace: Dumplie
+        src_path: ./src/Dumplie

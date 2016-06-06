@@ -2,7 +2,9 @@
 
 namespace Spec\Dumplie\Domain\Customer;
 
+use Dumplie\Domain\Customer\CartId;
 use Dumplie\Domain\Customer\Exception\ProductNotAvailableException;
+use Dumplie\Domain\Customer\Exception\ProductNotInCartException;
 use Dumplie\Domain\Customer\Product;
 use Dumplie\Domain\SharedKernel\Exception\InvalidCurrencyException;
 use Dumplie\Domain\SharedKernel\Money\Price;
@@ -12,6 +14,11 @@ use Prophecy\Argument;
 
 class CartSpec extends ObjectBehavior
 {
+    function let()
+    {
+        $this->beConstructedWith(CartId::generate(), 'EUR');
+    }
+
     function it_is_empty_by_default()
     {
         $this->isEmpty()->shouldReturn(true);
@@ -21,8 +28,8 @@ class CartSpec extends ObjectBehavior
     {
         $this->add(new Product(new SKU("DUMPLIE_SKU_1"), Price::fromInt(100, 'EUR'), true), 1);
 
-        $this->totalPrice()->floatValue()->shouldReturn(100.00);
-        $this->totalPrice()->currency()->shouldReturn('EUR');
+        $this->isEmpty()->shouldReturn(false);
+        $this->items()->shouldHaveCount(1);
     }
 
     function it_replace_products_with_same_sku()
@@ -32,8 +39,8 @@ class CartSpec extends ObjectBehavior
         $this->add(new Product(new SKU("DUMPLIE_SKU_1"), Price::fromInt(100, 'EUR'), true), 4);
 
 
-        $this->totalPrice()->floatValue()->shouldReturn(400.00);
-        $this->totalPrice()->currency()->shouldReturn('EUR');
+        $this->isEmpty()->shouldReturn(false);
+        $this->items()->shouldHaveCount(1);
     }
 
     function it_throws_exception_when_adding_product_with_different_currencies()
@@ -48,5 +55,21 @@ class CartSpec extends ObjectBehavior
     {
         $this->shouldThrow(ProductNotAvailableException::class)
             ->during('add', [new Product(new SKU("DUMPLIE_SKU_1"), Price::PLN(100), false), 1]);
+    }
+
+    function it_throws_exception_when_removing_products_that_is_not_in_cart()
+    {
+        $this->shouldThrow(ProductNotInCartException::class)
+            ->during('remove', [new SKU('NOT_EXISTING_SKU')]);
+    }
+
+    function it_allows_to_remove_items()
+    {
+        $sku = new SKU("DUMPLIE_SKU_1");
+        $this->add(new Product($sku, Price::EUR(100), true), 1);
+
+        $this->remove($sku);
+
+        $this->isEmpty()->shouldReturn(true);
     }
 }

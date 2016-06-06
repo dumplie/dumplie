@@ -8,6 +8,7 @@ class InvalidArgumentException extends Exception
 {
     /**
      * @param int $given
+     *
      * @return InvalidArgumentException
      */
     public static function negativePriceAmount(int $given) : InvalidArgumentException
@@ -17,6 +18,7 @@ class InvalidArgumentException extends Exception
 
     /**
      * @param int $given
+     *
      * @return InvalidArgumentException
      */
     public static function negativePricePrecision(int $given) : InvalidArgumentException

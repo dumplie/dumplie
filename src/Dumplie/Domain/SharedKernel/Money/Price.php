@@ -98,6 +98,16 @@ final class Price
     }
 
     /**
+     * @param string $currency
+     *
+     * @return bool
+     */
+    public function hasCurrency(string $currency) : bool
+    {
+        return $this->currency() === mb_strtoupper($currency);
+    }
+
+    /**
      * @param Price $addend
      *
      * @return Price

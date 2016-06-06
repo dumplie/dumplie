@@ -7,10 +7,9 @@ namespace Dumplie\Application\Command\Customer;
 use Dumplie\Application\Transaction\Factory;
 use Dumplie\Domain\Customer\CartId;
 use Dumplie\Domain\Customer\Carts;
-use Dumplie\Domain\Customer\Products;
 use Dumplie\Domain\SharedKernel\Product\SKU;
 
-final class AddToCartHandler
+final class RemoveFromCartHandler
 {
     /**
      * @var Carts
@@ -18,42 +17,33 @@ final class AddToCartHandler
     private $carts;
 
     /**
-     * @var Products
-     */
-    private $products;
-
-    /**
      * @var Factory
      */
     private $factory;
 
     /**
-     * AddToCartHandler constructor.
-     *
-     * @param Products $products
-     * @param Carts    $carts
+     * @param Carts   $carts
+     * @param Factory $factory
      */
-    public function __construct(Products $products, Carts $carts, Factory $factory)
+    public function __construct(Carts $carts, Factory $factory)
     {
-        $this->products = $products;
         $this->carts = $carts;
         $this->factory = $factory;
     }
 
     /**
-     * @param AddToCart $command
+     * @param RemoveFromCart $command
      *
      * @throws \Exception
      */
-    public function handle(AddToCart $command)
+    public function handle(RemoveFromCart $command)
     {
-        $product = $this->products->getBySku(new SKU($command->sku()));
         $cart = $this->carts->getById(new CartId($command->cartId()));
 
         $transaction = $this->factory->open();
 
         try {
-            $cart->add($product, $command->quantity());
+            $cart->remove(new SKU($command->sku()));
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

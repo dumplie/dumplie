@@ -15,6 +15,7 @@ final class SKU
 
     /**
      * @param string $code
+     *
      * @throws InvalidArgumentException
      */
     public function __construct(string $code)

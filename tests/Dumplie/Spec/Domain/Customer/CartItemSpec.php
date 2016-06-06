@@ -14,6 +14,6 @@ class CartItemSpec extends ObjectBehavior
     function it_throws_exception_when_unit_is_lower_than_1()
     {
         $this->shouldThrow(InvalidArgumentException::class)
-            ->during('__construct', [new Product(new SKU("DUMPLIE_SKU_1"), Price::EUR(100), true), 0]);
+            ->during('__construct', [new SKU("DUMPLIE_SKU_1"), 0]);
     }
 }

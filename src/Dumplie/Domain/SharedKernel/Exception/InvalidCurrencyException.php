@@ -7,13 +7,11 @@ namespace Dumplie\Domain\SharedKernel\Exception;
 class InvalidCurrencyException extends InvalidArgumentException
 {
     /**
-     * InvalidCurrencyException constructor.
-     *
-     * @param string $baseCurrency
-     * @param string $addedCurrency
+     * @param string $expected
+     * @param string $received
      */
-    public function __construct(string $baseCurrency, string $addedCurrency)
+    public function __construct(string $expected, string $received)
     {
-        parent::__construct(sprintf("Can't add price with \"%s\" currency to \"%s\"", $baseCurrency, $addedCurrency));
+        parent::__construct(sprintf("Can't add price with \"%s\" currency to \"%s\"", $expected, $received));
     }
 }

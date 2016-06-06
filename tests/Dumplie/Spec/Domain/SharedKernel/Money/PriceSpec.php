@@ -28,6 +28,17 @@ class PriceSpec extends ObjectBehavior
         $this->floatValue()->shouldReturn(100.00);
     }
 
+    function it_has_immutable_currency()
+    {
+        $this->beConstructedWith(10000, 'EUR', 100);
+
+        $this->hasCurrency('EUR')->shouldReturn(true);
+        $this->hasCurrency('eur')->shouldReturn(true);
+
+        $this->hasCurrency('PLN')->shouldReturn(false);
+    }
+
+
     function it_can_be_created_from_integer()
     {
         $this->beConstructedThrough('fromInt', [100, 'EUR']);

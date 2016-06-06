@@ -6,5 +6,4 @@ namespace Dumplie\Application\Exception\Query;
 
 class Exception extends \Dumplie\Application\Exception\Exception
 {
-
 }

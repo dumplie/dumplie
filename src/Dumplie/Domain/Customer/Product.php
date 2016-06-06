@@ -26,9 +26,9 @@ final class Product
     private $available;
 
     /**
-     * @param SKU $sku
-     * @param Price  $price
-     * @param bool   $available
+     * @param SKU   $sku
+     * @param Price $price
+     * @param bool  $available
      *
      * @throws InvalidArgumentException
      */

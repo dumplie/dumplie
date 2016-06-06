@@ -24,11 +24,7 @@ final class InMemoryCarts implements Carts
         $this->carts = [];
 
         foreach ($carts as $cart) {
-            if (!$cart instanceof Cart) {
-                throw new \InvalidArgumentException();
-            }
-
-            $this->carts[(string) $cart->id()] = $cart;
+            $this->add($cart);
         }
     }
 
@@ -46,5 +42,13 @@ final class InMemoryCarts implements Carts
         }
 
         return $this->carts[(string) $cartId];
+    }
+
+    /**
+     * @param Cart $cart
+     */
+    public function add(Cart $cart)
+    {
+        $this->carts[(string) $cart->id()] = $cart;
     }
 }

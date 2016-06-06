@@ -16,4 +16,9 @@ interface Carts
      * @return Cart
      */
     public function getById(CartId $cartId) : Cart;
+
+    /**
+     * @param Cart $cart
+     */
+    public function add(Cart $cart);
 }

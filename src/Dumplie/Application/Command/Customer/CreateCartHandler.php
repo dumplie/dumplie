@@ -38,11 +38,10 @@ final class CreateCartHandler
      */
     public function handle(CreateCart $command)
     {
-        $this->carts->add(new Cart(new CartId($command->uuid()), $command->currency()));
-
         $transaction = $this->factory->open();
 
         try {
+            $this->carts->add(new Cart(new CartId($command->uuid()), $command->currency()));
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

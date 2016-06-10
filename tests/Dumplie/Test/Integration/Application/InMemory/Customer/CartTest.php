@@ -84,7 +84,7 @@ class CartTest extends \PHPUnit_Framework_TestCase
     {
         $cartId = CartId::generate();
         $command = new CreateCart($cartId, $currency);
-        $handler = new CreateCartHandler($this->carts);
+        $handler = new CreateCartHandler($this->carts, $this->transactionFactory);
 
         $handler->handle($command);
 

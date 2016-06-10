@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\Customer;
 
+use Dumplie\Application\Transaction\Factory;
 use Dumplie\Domain\Customer\Cart;
 use Dumplie\Domain\Customer\CartId;
 use Dumplie\Domain\Customer\Carts;
@@ -16,18 +17,36 @@ final class CreateCartHandler
     private $carts;
 
     /**
-     * @param Carts $carts
+     * @var Factory
      */
-    public function __construct(Carts $carts)
+    private $factory;
+
+    /**
+     * @param Carts   $carts
+     * @param Factory $factory
+     */
+    public function __construct(Carts $carts, Factory $factory)
     {
         $this->carts = $carts;
+        $this->factory = $factory;
     }
 
     /**
      * @param CreateCart $command
+     *
+     * @throws \Exception
      */
     public function handle(CreateCart $command)
     {
         $this->carts->add(new Cart(new CartId($command->uuid()), $command->currency()));
+
+        $transaction = $this->factory->open();
+
+        try {
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollback();
+            throw $e;
+        }
     }
 }

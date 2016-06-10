@@ -20,6 +20,14 @@ class PriceSpec extends ObjectBehavior
     {
         $this->shouldThrow(InvalidArgumentException::class)->during('__construct', [1000, 'EUR', -100]);
     }
+    
+    function it_throw_exception_when_currency_is_not_known()
+    {
+        $this
+            ->shouldThrow(InvalidArgumentException::invalidCurrency('Unknown'))
+            ->during('__construct', [1000, 'Unknown', 100])
+        ;
+    }
 
     function it_is_converted_to_float()
     {

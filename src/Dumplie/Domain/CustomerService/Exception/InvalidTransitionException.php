@@ -27,4 +27,3 @@ class InvalidTransitionException extends Exception
         return new static(sprintf('Can not transit from final state "%s"', $state));
     }
 }
-

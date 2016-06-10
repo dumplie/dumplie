@@ -44,6 +44,10 @@ final class Price
             throw InvalidArgumentException::negativePricePrecision($precision);
         }
 
+        if (!Currencies::isValid($currency)) {
+            throw InvalidArgumentException::invalidCurrency($currency);
+        }
+
         $this->amount = $amount;
         $this->currency = $currency;
         $this->precision = $precision;

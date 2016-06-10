@@ -33,4 +33,12 @@ class InvalidArgumentException extends Exception
     {
         return new self("Product SKU code can't be empty");
     }
+
+    /**
+     * @return InvalidArgumentException
+     */
+    public static function invalidCurrency(string $currency) : InvalidArgumentException
+    {
+        return new self(sprintf('Invalid currency code "%s"', $currency));
+    }
 }

@@ -24,6 +24,13 @@ final class Product
      */
     private $isInStock;
 
+    /**
+     * Product constructor.
+     *
+     * @param SKU   $sku
+     * @param Price $price
+     * @param bool  $isInStock
+     */
     public function __construct(
         SKU $sku,
         Price $price,

@@ -35,6 +35,8 @@ class InvalidArgumentException extends Exception
     }
 
     /**
+     * @param string $currency
+     *
      * @return InvalidArgumentException
      */
     public static function invalidCurrency(string $currency) : InvalidArgumentException

@@ -19,12 +19,23 @@ final class CancelOrderHandler
      */
     private $factory;
 
+    /**
+     * CancelOrderHandler constructor.
+     *
+     * @param Orders  $orders
+     * @param Factory $factory
+     */
     public function __construct(Orders $orders, Factory $factory)
     {
         $this->orders = $orders;
         $this->factory = $factory;
     }
 
+    /**
+     * @param CancelOrder $command
+     *
+     * @throws \Exception
+     */
     public function handle(CancelOrder $command)
     {
         $this->orders->getById(new OrderId($command->orderId()))->cancel();

@@ -22,12 +22,23 @@ final class CreateProductHandler
      */
     private $transactionFactory;
 
+    /**
+     * CreateProductHandler constructor.
+     *
+     * @param Products $products
+     * @param Factory  $transactionFactory
+     */
     public function __construct(Products $products, Factory $transactionFactory)
     {
         $this->products = $products;
         $this->transactionFactory = $transactionFactory;
     }
 
+    /**
+     * @param CreateProduct $createProduct
+     *
+     * @throws \Exception
+     */
     public function handle(CreateProduct $createProduct)
     {
         $transaction = $this->transactionFactory->open();

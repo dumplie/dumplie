@@ -32,6 +32,7 @@ final class AddToCartHandler
      *
      * @param Products $products
      * @param Carts    $carts
+     * @param Factory  $factory
      */
     public function __construct(Products $products, Carts $carts, Factory $factory)
     {

@@ -26,6 +26,14 @@ final class CreateProduct
      */
     private $isInStock;
 
+    /**
+     * CreateProduct constructor.
+     *
+     * @param string $sku
+     * @param int    $amount
+     * @param string $currency
+     * @param bool   $isInStock
+     */
     public function __construct(
         string $sku,
         int $amount,

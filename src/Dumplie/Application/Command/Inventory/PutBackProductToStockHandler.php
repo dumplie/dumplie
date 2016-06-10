@@ -20,12 +20,23 @@ final class PutBackProductToStockHandler
      */
     private $transactionFactory;
 
+    /**
+     * PutBackProductToStockHandler constructor.
+     *
+     * @param Products $products
+     * @param Factory  $factory
+     */
     public function __construct(Products $products, Factory $factory)
     {
         $this->products = $products;
         $this->transactionFactory = $factory;
     }
 
+    /**
+     * @param PutBackProductToStock $command
+     *
+     * @throws \Exception
+     */
     public function handle(PutBackProductToStock $command)
     {
         $product = $this->products->getBySku(new SKU($command->sku()));

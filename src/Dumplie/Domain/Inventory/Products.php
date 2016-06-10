@@ -17,5 +17,9 @@ interface Products
      * @throws ProductNotFound - when product with given SKU were not found
      */
     public function getBySku(SKU $SKU): Product;
+
+    /**
+     * @param Product $product
+     */
     public function add(Product $product);
 }

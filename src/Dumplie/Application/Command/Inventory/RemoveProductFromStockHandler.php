@@ -20,12 +20,23 @@ final class RemoveProductFromStockHandler
      */
     private $transactionFactory;
 
+    /**
+     * RemoveProductFromStockHandler constructor.
+     *
+     * @param Products $products
+     * @param Factory  $factory
+     */
     public function __construct(Products $products, Factory $factory)
     {
         $this->products = $products;
         $this->transactionFactory = $factory;
     }
 
+    /**
+     * @param RemoveProductFromStock $command
+     *
+     * @throws \Exception
+     */
     public function handle(RemoveProductFromStock $command)
     {
         $product = $this->products->getBySku(new SKU($command->sku()));

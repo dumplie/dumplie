@@ -39,11 +39,12 @@ final class RefundOrderHandler
      */
     public function handle(RefundOrder $command)
     {
-        $this->orders->getById(new OrderId($command->orderId()))->refund();
-
         $transaction = $this->factory->open();
 
         try {
+            $order = $this->orders->getById(new OrderId($command->orderId()));
+            $order->refund();
+            
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

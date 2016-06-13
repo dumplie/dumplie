@@ -39,11 +39,12 @@ final class PayOrderHandler
      */
     public function handle(PayOrder $command)
     {
-        $this->orders->getById(new OrderId($command->orderId()))->pay();
-
         $transaction = $this->factory->open();
 
         try {
+            $order = $this->orders->getById(new OrderId($command->orderId()));
+            $order->pay();
+            
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

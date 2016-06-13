@@ -39,11 +39,12 @@ final class RejectOrderHandler
      */
     public function handle(RejectOrder $command)
     {
-        $this->orders->getById(new OrderId($command->orderId()))->reject();
-
         $transaction = $this->factory->open();
 
         try {
+            $order = $this->orders->getById(new OrderId($command->orderId()));
+            $order->reject();
+            
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

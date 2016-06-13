@@ -39,11 +39,12 @@ final class SendOrderHandler
      */
     public function handle(SendOrder $command)
     {
-        $this->orders->getById(new OrderId($command->orderId()))->send();
-
         $transaction = $this->factory->open();
 
         try {
+            $order = $this->orders->getById(new OrderId($command->orderId()));
+            $order->send();
+            
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

@@ -39,12 +39,12 @@ final class RemoveProductFromStockHandler
      */
     public function handle(RemoveProductFromStock $command)
     {
-        $product = $this->products->getBySku(new SKU($command->sku()));
-
         $transaction = $this->transactionFactory->open();
 
         try {
+            $product = $this->products->getBySku(new SKU($command->sku()));
             $product->removeFromStock();
+
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

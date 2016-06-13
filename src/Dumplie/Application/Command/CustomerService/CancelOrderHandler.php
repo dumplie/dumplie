@@ -38,11 +38,12 @@ final class CancelOrderHandler
      */
     public function handle(CancelOrder $command)
     {
-        $this->orders->getById(new OrderId($command->orderId()))->cancel();
-
         $transaction = $this->factory->open();
 
         try {
+            $order = $this->orders->getById(new OrderId($command->orderId()));
+            $order->cancel();
+            
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

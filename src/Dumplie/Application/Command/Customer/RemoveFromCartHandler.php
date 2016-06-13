@@ -38,12 +38,12 @@ final class RemoveFromCartHandler
      */
     public function handle(RemoveFromCart $command)
     {
-        $cart = $this->carts->getById(new CartId($command->cartId()));
-
         $transaction = $this->factory->open();
 
         try {
+            $cart = $this->carts->getById(new CartId($command->cartId()));
             $cart->remove(new SKU($command->sku()));
+
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

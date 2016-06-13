@@ -49,12 +49,13 @@ final class AddToCartHandler
     public function handle(AddToCart $command)
     {
         $product = $this->products->getBySku(new SKU($command->sku()));
-        $cart = $this->carts->getById(new CartId($command->cartId()));
 
         $transaction = $this->factory->open();
 
         try {
+            $cart = $this->carts->getById(new CartId($command->cartId()));
             $cart->add($product, $command->quantity());
+
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

@@ -39,11 +39,12 @@ final class PrepareOrderHandler
      */
     public function handle(PrepareOrder $command)
     {
-        $this->orders->getById(new OrderId($command->orderId()))->prepare();
-
         $transaction = $this->factory->open();
 
         try {
+            $order = $this->orders->getById(new OrderId($command->orderId()));
+            $order->prepare();
+            
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

@@ -49,6 +49,7 @@ final class CreateProductHandler
                 Price::fromInt($createProduct->amount(), $createProduct->currency()),
                 $createProduct->isInStock()
             ));
+
             $transaction->commit();
         } catch (\Exception $e) {
             $transaction->rollback();

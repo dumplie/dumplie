@@ -48,11 +48,12 @@ final class AddToCartHandler
      */
     public function handle(AddToCart $command)
     {
-        $product = $this->products->getBySku(new SKU($command->sku()));
 
         $transaction = $this->factory->open();
 
         try {
+            $product = $this->products->getBySku(new SKU($command->sku()));
+
             $cart = $this->carts->getById(new CartId($command->cartId()));
             $cart->add($product, $command->quantity());
 

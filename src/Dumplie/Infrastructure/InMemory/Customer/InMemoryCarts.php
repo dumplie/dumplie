@@ -51,4 +51,13 @@ final class InMemoryCarts implements Carts
     {
         $this->carts[(string) $cart->id()] = $cart;
     }
+
+    /**
+     * @param CartId $cartId
+     * @return bool
+     */
+    public function exists(CartId $cartId) : bool
+    {
+        return array_key_exists((string) $cartId, $this->carts);
+    }
 }

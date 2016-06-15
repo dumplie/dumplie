@@ -21,4 +21,10 @@ interface Carts
      * @param Cart $cart
      */
     public function add(Cart $cart);
+
+    /**
+     * @param CartId $cartId
+     * @return bool
+     */
+    public function exists(CartId $cartId) : bool;
 }

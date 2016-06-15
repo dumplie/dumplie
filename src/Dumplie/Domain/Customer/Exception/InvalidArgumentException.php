@@ -15,4 +15,15 @@ class InvalidArgumentException extends Exception
     {
         return new self(sprintf('Invalid currency code "%s"', $currency));
     }
+
+    /**
+     * @param string $value
+     * @param string $valueName
+     * 
+     * @return InvalidArgumentException
+     */
+    public static function invalidAddress(string $value, string $valueName) : InvalidArgumentException
+    {
+        return new self(sprintf('"%s" is not valid "%s"', $value, $valueName));
+    }
 }

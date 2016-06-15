@@ -9,12 +9,12 @@ use Dumplie\Domain\CustomerService\Exception\OrderNotFoundException;
 interface Orders
 {
     /**
-     * @param OrderId $cartId
+     * @param OrderId $orderId
      *
      * @throws OrderNotFoundException
      * @return Order
      */
-    public function getById(OrderId $cartId) : Order;
+    public function getById(OrderId $orderId) : Order;
 
     /**
      * @param Order $order

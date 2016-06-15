@@ -11,16 +11,6 @@ interface OrderState
     /**
      * @throws InvalidTransitionException
      */
-    public function pay(): OrderState;
-
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function cancel(): OrderState;
-
-    /**
-     * @throws InvalidTransitionException
-     */
     public function accept(): OrderState;
 
     /**

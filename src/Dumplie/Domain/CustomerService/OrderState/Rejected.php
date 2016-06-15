@@ -12,22 +12,6 @@ final class Rejected implements OrderState
     /**
      * @throws InvalidTransitionException
      */
-    public function pay(): OrderState
-    {
-        throw InvalidTransitionException::finalState('rejected');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function cancel(): OrderState
-    {
-        throw InvalidTransitionException::finalState('rejected');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
     public function accept(): OrderState
     {
         throw InvalidTransitionException::finalState('rejected');

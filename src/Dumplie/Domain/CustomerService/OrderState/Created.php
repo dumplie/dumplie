@@ -7,24 +7,8 @@ namespace Dumplie\Domain\CustomerService\OrderState;
 use Dumplie\Domain\CustomerService\Exception\InvalidTransitionException;
 use Dumplie\Domain\CustomerService\OrderState;
 
-final class Paid implements OrderState
+final class Created implements OrderState
 {
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function pay(): OrderState
-    {
-        throw InvalidTransitionException::unexpectedTransition('paid', 'paid');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function cancel(): OrderState
-    {
-        throw InvalidTransitionException::unexpectedTransition('paid', 'canceled');
-    }
-
     /**
      * @return OrderState
      */
@@ -46,7 +30,7 @@ final class Paid implements OrderState
      */
     public function prepare(): OrderState
     {
-        throw InvalidTransitionException::unexpectedTransition('paid', 'prepared');
+        throw InvalidTransitionException::unexpectedTransition('created', 'prepared');
     }
 
     /**
@@ -54,7 +38,7 @@ final class Paid implements OrderState
      */
     public function refund(): OrderState
     {
-        throw InvalidTransitionException::unexpectedTransition('paid', 'refunded');
+        throw InvalidTransitionException::unexpectedTransition('created', 'refunded');
     }
 
     /**
@@ -62,6 +46,6 @@ final class Paid implements OrderState
      */
     public function send(): OrderState
     {
-        throw InvalidTransitionException::unexpectedTransition('paid', 'sent');
+        throw InvalidTransitionException::unexpectedTransition('created', 'sent');
     }
 }

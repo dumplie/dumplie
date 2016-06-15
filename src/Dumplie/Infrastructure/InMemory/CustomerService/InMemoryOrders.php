@@ -29,18 +29,18 @@ final class InMemoryOrders implements Orders
     }
 
     /**
-     * @param OrderId $cartId
-     *
-     * @return Order
+     * @param OrderId $orderId
+     * 
+*@return Order
      * @throws OrderNotFoundException
      */
-    public function getById(OrderId $cartId) : Order
+    public function getById(OrderId $orderId) : Order
     {
-        if (!array_key_exists((string) $cartId, $this->orders)) {
-            throw OrderNotFoundException::byId($cartId);
+        if (!array_key_exists((string)$orderId, $this->orders)) {
+            throw OrderNotFoundException::byId($orderId);
         }
 
-        return $this->orders[(string) $cartId];
+        return $this->orders[(string)$orderId];
     }
 
     /**

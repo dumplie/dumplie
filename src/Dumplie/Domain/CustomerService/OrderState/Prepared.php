@@ -12,22 +12,6 @@ final class Prepared implements OrderState
     /**
      * @throws InvalidTransitionException
      */
-    public function pay(): OrderState
-    {
-        throw InvalidTransitionException::unexpectedTransition('prepared', 'paid');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function cancel(): OrderState
-    {
-        throw InvalidTransitionException::unexpectedTransition('prepared', 'canceled');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
     public function accept(): OrderState
     {
         throw InvalidTransitionException::unexpectedTransition('prepared', 'accepted');

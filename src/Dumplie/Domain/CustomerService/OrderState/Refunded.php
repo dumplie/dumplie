@@ -12,22 +12,6 @@ final class Refunded implements OrderState
     /**
      * @throws InvalidTransitionException
      */
-    public function pay(): OrderState
-    {
-        throw InvalidTransitionException::finalState('refunded');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function cancel(): OrderState
-    {
-        throw InvalidTransitionException::finalState('refunded');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
     public function accept(): OrderState
     {
         throw InvalidTransitionException::finalState('refunded');

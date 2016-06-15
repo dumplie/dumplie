@@ -5,7 +5,7 @@ declare (strict_types = 1);
 namespace Dumplie\Domain\CustomerService;
 
 use Dumplie\Domain\CustomerService\Exception\InvalidTransitionException;
-use Dumplie\Domain\CustomerService\OrderState\Unpaid;
+use Dumplie\Domain\CustomerService\OrderState\Created;
 
 final class Order
 {
@@ -22,12 +22,7 @@ final class Order
     /**
      * @var null|\DateTimeInterface
      */
-    private $wasPaidAt;
-
-    /**
-     * @var null|\DateTimeInterface
-     */
-    private $wasCanceledAt;
+    private $wasCreated;
 
     /**
      * @var null|\DateTimeInterface
@@ -60,7 +55,8 @@ final class Order
     public function __construct()
     {
         $this->id = OrderId::generate();
-        $this->state = new Unpaid();
+        $this->wasCreated = new \DateTimeImmutable();
+        $this->state = new Created();
     }
 
     /**
@@ -69,24 +65,6 @@ final class Order
     public function id() : OrderId
     {
         return $this->id;
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function pay()
-    {
-        $this->state = $this->state->pay();
-        $this->wasPaidAt = new \DateTimeImmutable();
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function cancel()
-    {
-        $this->state = $this->state->cancel();
-        $this->wasCanceledAt = new \DateTimeImmutable();
     }
 
     /**

@@ -12,22 +12,6 @@ final class Accepted implements OrderState
     /**
      * @throws InvalidTransitionException
      */
-    public function pay(): OrderState
-    {
-        throw InvalidTransitionException::unexpectedTransition('accepted', 'paid');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function cancel(): OrderState
-    {
-        throw InvalidTransitionException::unexpectedTransition('accepted', 'canceled');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
     public function accept(): OrderState
     {
         throw InvalidTransitionException::unexpectedTransition('accepted', 'accepted');

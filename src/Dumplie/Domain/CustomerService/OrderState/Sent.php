@@ -12,22 +12,6 @@ final class Sent implements OrderState
     /**
      * @throws InvalidTransitionException
      */
-    public function pay(): OrderState
-    {
-        throw InvalidTransitionException::finalState('sent');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
-    public function cancel(): OrderState
-    {
-        throw InvalidTransitionException::finalState('sent');
-    }
-
-    /**
-     * @throws InvalidTransitionException
-     */
     public function accept(): OrderState
     {
         throw InvalidTransitionException::finalState('sent');

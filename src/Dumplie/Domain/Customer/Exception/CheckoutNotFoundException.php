@@ -6,7 +6,7 @@ namespace Dumplie\Domain\Customer\Exception;
 
 use Dumplie\Domain\Customer\CartId;
 
-class CheckoutNotFoundException extends Exception
+class CheckoutNotFoundException extends NotFoundException
 {
     /**
      * @param CartId $cartId

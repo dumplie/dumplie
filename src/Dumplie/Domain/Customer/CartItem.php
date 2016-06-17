@@ -40,7 +40,7 @@ final class CartItem
      */
     public function sku() : SKU
     {
-        return $this->sku();
+        return $this->sku;
     }
 
     /**

@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 namespace Dumplie\Domain\Customer\Exception;
 
-class ProductNotFoundException extends Exception
+class ProductNotFoundException extends NotFoundException
 {
     /**
      * @param string $sku

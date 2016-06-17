@@ -24,6 +24,13 @@ interface Carts
 
     /**
      * @param CartId $cartId
+     *
+     * @throws CartNotFoundException
+     */
+    public function remove(CartId $cartId);
+
+    /**
+     * @param CartId $cartId
      * @return bool
      */
     public function exists(CartId $cartId) : bool;

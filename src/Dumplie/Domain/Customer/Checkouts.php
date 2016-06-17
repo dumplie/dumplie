@@ -26,4 +26,9 @@ interface Checkouts
      * @throws CheckoutNotFoundException
      */
     public function getForCart(CartId $cartId) : Checkout;
+
+    /**
+     * @param CartId $cartId
+     */
+    public function removeForCart(CartId $cartId);
 }

@@ -54,6 +54,20 @@ final class InMemoryCarts implements Carts
 
     /**
      * @param CartId $cartId
+     * 
+     * @throws CartNotFoundException
+     */
+    public function remove(CartId $cartId)
+    {
+        if (!$this->exists($cartId)) {
+            throw CartNotFoundException::byId($cartId);
+        }
+
+        unset($this->carts[(string) $cartId]);
+    }
+
+    /**
+     * @param CartId $cartId
      * @return bool
      */
     public function exists(CartId $cartId) : bool

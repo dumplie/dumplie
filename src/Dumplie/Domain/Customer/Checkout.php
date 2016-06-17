@@ -4,6 +4,9 @@ declare (strict_types = 1);
 
 namespace Dumplie\Domain\Customer;
 
+use Dumplie\Domain\Customer\Exception\EmptyCartException;
+use Dumplie\Domain\Customer\Exception\ProductNotFoundException;
+
 final class Checkout
 {
     /**
@@ -70,5 +73,30 @@ final class Checkout
     public function billingAddress() : Address
     {
         return $this->billingAddress;
+    }
+
+    /**
+     * @param OrderId $id
+     * @param Products $products
+     * @param Carts $carts
+     * @return Order
+     * @throws EmptyCartException
+     * @throws ProductNotFoundException
+     */
+    public function placeOrder(OrderId $id, Products $products, Carts $carts) : Order
+    {
+        $cart = $carts->getById($this->cartId());
+
+        if ($cart->isEmpty()) {
+            throw new EmptyCartException;
+        }
+        $orderItems = [];
+        foreach ($cart->items() as $item) {
+            $product = $products->getBySku($item->sku());
+
+            $orderItems[] = OrderItem::createFromProduct($product, $item->quantity());
+        }
+
+        return new Order($id, $orderItems, $this->billingAddress(), $this->shippingAddress());
     }
 }

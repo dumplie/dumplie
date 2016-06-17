@@ -45,7 +45,7 @@ final class InMemoryCheckouts implements Checkouts
     /**
      * @param CartId $cartId
      * @return Checkout
-     * 
+     *
      * @throws CheckoutNotFoundException
      */
     public function getForCart(CartId $cartId) : Checkout
@@ -55,5 +55,19 @@ final class InMemoryCheckouts implements Checkouts
         }
 
         return $this->checkouts[(string) $cartId];
+    }
+
+    /**
+     * @param CartId $cartId
+     * 
+     * @throws CheckoutNotFoundException
+     */
+    public function removeForCart(CartId $cartId)
+    {
+        if (!$this->existsForCart($cartId)) {
+            throw new CheckoutNotFoundException;
+        }
+
+        unset($this->checkouts[(string) $cartId]);
     }
 }

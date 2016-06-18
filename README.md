@@ -1,5 +1,10 @@
 # Dumplie
 
+Dumplie is first ecommerce framework not bound to any php framework. It is build to be used with any existing solution. 
+
+Feel free to join us on slack!
+[![Slack Status](https://dumplie.herokuapp.com/badge.svg)](https://dumplie.herokuapp.com/)
+
 ## Development environment
 
 ### Docker

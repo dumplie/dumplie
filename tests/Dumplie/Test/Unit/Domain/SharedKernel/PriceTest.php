@@ -6,10 +6,7 @@ use Dumplie\Domain\SharedKernel\Money\Price;
 
 class PriceTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @test
-     */
-    function it_can_be_created_through_static_constructor()
+    function test_if_can_be_created_through_static_constructor()
     {
         $price = Price::EUR(10000);
 

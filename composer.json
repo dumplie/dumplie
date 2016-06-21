@@ -8,7 +8,8 @@
         "ext-mbstring": "*",
 
         "league/tactician": "^1.0",
-        "ramsey/uuid": "^3.0"
+        "ramsey/uuid": "^3.0",
+        "coduo/php-to-string": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.3",

@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Dumplie\Infrastructure\Tactician;
 
+use Dumplie\Application\Command\Command;
 use League\Tactician\CommandBus as Tactician;
 
 final class CommandBus implements \Dumplie\Application\CommandBus
@@ -24,9 +25,9 @@ final class CommandBus implements \Dumplie\Application\CommandBus
     }
 
     /**
-     * @param $command
+     * @param Command $command
      */
-    public function handle($command)
+    public function handle(Command $command)
     {
         $this->commandBus->handle($command);
     }

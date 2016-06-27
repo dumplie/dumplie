@@ -4,7 +4,6 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\Customer;
 
-use Dumplie\Application\Transaction\Factory;
 use Dumplie\Domain\Customer\Address;
 use Dumplie\Domain\Customer\CartId;
 use Dumplie\Domain\Customer\Carts;
@@ -23,11 +22,6 @@ final class NewCheckoutHandler
     private $checkouts;
 
     /**
-     * @var Factory
-     */
-    private $factory;
-
-    /**
      * @var Carts
      */
     private $carts;
@@ -35,12 +29,10 @@ final class NewCheckoutHandler
     /**
      * @param Checkouts $checkouts
      * @param Carts $carts
-     * @param Factory $factory
      */
-    public function __construct(Checkouts $checkouts, Carts $carts, Factory $factory)
+    public function __construct(Checkouts $checkouts, Carts $carts)
     {
         $this->checkouts = $checkouts;
-        $this->factory = $factory;
         $this->carts = $carts;
     }
 
@@ -71,13 +63,6 @@ final class NewCheckoutHandler
             throw new CheckoutAlreadyExistsException;
         }
 
-        $transaction = $this->factory->open();
-
-        try {
-            $this->checkouts->add(new Checkout($cartId, $billingAddress));
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollback();
-        }
+        $this->checkouts->add(new Checkout($cartId, $billingAddress));
     }
 }

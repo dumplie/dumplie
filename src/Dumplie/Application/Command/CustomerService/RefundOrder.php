@@ -4,8 +4,13 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\CustomerService;
 
-class RefundOrder
+use Dumplie\Application\Command\Command;
+use Dumplie\Application\Command\CommandSerialize;
+
+class RefundOrder implements Command
 {
+    use CommandSerialize;
+    
     /**
      * @var string
      */

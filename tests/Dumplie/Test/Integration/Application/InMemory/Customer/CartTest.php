@@ -16,7 +16,6 @@ use Dumplie\Domain\SharedKernel\Money\Price;
 use Dumplie\Domain\SharedKernel\Product\SKU;
 use Dumplie\Infrastructure\InMemory\Customer\InMemoryCarts;
 use Dumplie\Infrastructure\InMemory\Customer\InMemoryProducts;
-use Dumplie\Infrastructure\InMemory\Transaction\Factory;
 
 class CartTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,11 +29,6 @@ class CartTest extends \PHPUnit_Framework_TestCase
      */
     private $products;
 
-    /**
-     * @var Factory
-     */
-    private $transactionFactory;
-
     function setUp()
     {
         $this->carts = new InMemoryCarts();
@@ -42,7 +36,6 @@ class CartTest extends \PHPUnit_Framework_TestCase
             new Product(new SKU('SKU_1'), Price::EUR(2500), true),
             new Product(new SKU('SKU_2'), Price::EUR(2500), true)
         ]);
-        $this->transactionFactory = new Factory();
     }
 
     function test_adding_new_products_to_cart()
@@ -50,7 +43,7 @@ class CartTest extends \PHPUnit_Framework_TestCase
         $cartId = $this->createNewCart('EUR');
 
         $command = new AddToCart('SKU_1', 2, (string) $cartId);
-        $handler = new AddToCartHandler($this->products, $this->carts, $this->transactionFactory);
+        $handler = new AddToCartHandler($this->products, $this->carts);
 
         $handler->handle($command);
 
@@ -64,11 +57,11 @@ class CartTest extends \PHPUnit_Framework_TestCase
         $cartId = $this->createNewCart('EUR');
 
         $addCommand = new AddToCart('SKU_1', 2, (string) $cartId);
-        $addHandler = new AddToCartHandler($this->products, $this->carts, $this->transactionFactory);
+        $addHandler = new AddToCartHandler($this->products, $this->carts);
         $addHandler->handle($addCommand);
 
         $removeCommand = new RemoveFromCart((string) $cartId, 'SKU_1');
-        $removeHandler = new RemoveFromCartHandler($this->carts, $this->transactionFactory);
+        $removeHandler = new RemoveFromCartHandler($this->carts);
         $removeHandler->handle($removeCommand);
 
         $cart = $this->carts->getById($cartId);
@@ -84,7 +77,7 @@ class CartTest extends \PHPUnit_Framework_TestCase
     {
         $cartId = CartId::generate();
         $command = new CreateCart($cartId, $currency);
-        $handler = new CreateCartHandler($this->carts, $this->transactionFactory);
+        $handler = new CreateCartHandler($this->carts);
 
         $handler->handle($command);
 

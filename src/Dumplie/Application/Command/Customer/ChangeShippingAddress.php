@@ -4,14 +4,18 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\Customer;
 
-final class ChangeShippingAddress
+use Dumplie\Application\Command\Command;
+use Dumplie\Application\Command\CommandSerialize;
+
+final class ChangeShippingAddress implements Command
 {
+    use CommandSerialize;
+    use AddressData;
+    
     /**
      * @var string
      */
     private $cartId;
-
-    use AddressData;
 
     /**
      * @param string $cartId

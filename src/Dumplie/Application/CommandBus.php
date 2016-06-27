@@ -4,10 +4,12 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application;
 
+use Dumplie\Application\Command\Command;
+
 interface CommandBus
 {
     /**
-     * @param $command
+     * @param Command $command
      */
-    public function handle($command);
+    public function handle(Command $command);
 }

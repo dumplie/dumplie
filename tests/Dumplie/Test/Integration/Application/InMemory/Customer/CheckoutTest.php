@@ -14,7 +14,6 @@ use Dumplie\Domain\Customer\Carts;
 use Dumplie\Domain\Customer\Checkouts;
 use Dumplie\Infrastructure\InMemory\Customer\InMemoryCarts;
 use Dumplie\Infrastructure\InMemory\Customer\InMemoryCheckouts;
-use Dumplie\Infrastructure\InMemory\Transaction\Factory;
 
 class CheckoutTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,11 +21,6 @@ class CheckoutTest extends \PHPUnit_Framework_TestCase
      * @var Checkouts
      */
     private $checkouts;
-
-    /**
-     * @var Factory
-     */
-    private $factory;
 
     /**
      * @var Carts
@@ -37,7 +31,6 @@ class CheckoutTest extends \PHPUnit_Framework_TestCase
     {
         $this->checkouts = new InMemoryCheckouts();
         $this->carts = new InMemoryCarts();
-        $this->factory = new Factory();
     }
 
     function test_new_checkout()
@@ -47,7 +40,7 @@ class CheckoutTest extends \PHPUnit_Framework_TestCase
         $this->carts->add(new Cart($cartId, 'EUR'));
 
         $command = new NewCheckout((string) $cartId, "Norbert Orzechowicz", "ul. FLorianska 1", "30-300", "Kraków", "PL");
-        $handler = new NewCheckoutHandler($this->checkouts, $this->carts, $this->factory);
+        $handler = new NewCheckoutHandler($this->checkouts, $this->carts);
 
         $handler->handle($command);
 
@@ -61,12 +54,12 @@ class CheckoutTest extends \PHPUnit_Framework_TestCase
         $this->carts->add(new Cart($cartId, 'EUR'));
 
         $command = new NewCheckout((string) $cartId, "Norbert Orzechowicz", "ul. FLorianska 1", "30-300", "Kraków", "PL");
-        $handler = new NewCheckoutHandler($this->checkouts, $this->carts, $this->factory);
+        $handler = new NewCheckoutHandler($this->checkouts, $this->carts);
 
         $handler->handle($command);
 
         $shippingAddressCommand = new ChangeShippingAddress((string) $cartId, "Lesze Prabucki", "ul. Rynek 2", "40-400", "Gdańsk", "PL");
-        $shippingAddressHandler = new ChangeShippingAddressHandler($this->checkouts, $this->factory);
+        $shippingAddressHandler = new ChangeShippingAddressHandler($this->checkouts);
 
         $shippingAddressHandler->handle($shippingAddressCommand);
 
@@ -88,12 +81,12 @@ class CheckoutTest extends \PHPUnit_Framework_TestCase
         $this->carts->add(new Cart($cartId, 'EUR'));
 
         $command = new NewCheckout((string) $cartId, "Norbert Orzechowicz", "ul. FLorianska 1", "30-300", "Kraków", "PL");
-        $handler = new NewCheckoutHandler($this->checkouts, $this->carts, $this->factory);
+        $handler = new NewCheckoutHandler($this->checkouts, $this->carts);
 
         $handler->handle($command);
 
         $shippingAddressCommand = new ChangeBillingAddress((string) $cartId, "Lesze Prabucki", "ul. Rynek 2", "40-400", "Gdańsk", "PL");
-        $shippingAddressHandler = new ChangeBillingAddressHandler($this->checkouts, $this->factory);
+        $shippingAddressHandler = new ChangeBillingAddressHandler($this->checkouts);
 
         $shippingAddressHandler->handle($shippingAddressCommand);
 

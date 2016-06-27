@@ -13,7 +13,6 @@ use Dumplie\Domain\CustomerService\Payment;
 use Dumplie\Domain\CustomerService\Payments;
 use Dumplie\Infrastructure\InMemory\CustomerService\InMemoryOrders;
 use Dumplie\Infrastructure\InMemory\CustomerService\InMemoryPayments;
-use Dumplie\Infrastructure\InMemory\Transaction\Factory;
 
 class PaymentTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,16 +26,10 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
      */
     private $payments;
 
-    /**
-     * @var Factory
-     */
-    private $transactionFactory;
-
     function setUp()
     {
         $this->payment = new Payment(new Order());
         $this->payments = new InMemoryPayments([$this->payment]);
-        $this->transactionFactory = new Factory();
     }
 
     function test_create_payment()
@@ -45,7 +38,7 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
         $carts = new InMemoryOrders([$order]);
 
         $command = new CreatePayment($order->id());
-        $handler = new CreatePaymentHandler($carts, $this->payments, $this->transactionFactory);
+        $handler = new CreatePaymentHandler($carts, $this->payments);
 
         $handler->handle($command);
     }
@@ -53,7 +46,7 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
     function test_pay_payment()
     {
         $command = new PayPayment($this->payment->id());
-        $handler = new PayPaymentHandler($this->payments, $this->transactionFactory);
+        $handler = new PayPaymentHandler($this->payments);
 
         $handler->handle($command);
     }
@@ -61,7 +54,7 @@ class PaymentTest extends \PHPUnit_Framework_TestCase
     function test_reject_payment()
     {
         $payCommand = new RejectPayment($this->payment->id());
-        $payHandler = new RejectPaymentHandler($this->payments, $this->transactionFactory);
+        $payHandler = new RejectPaymentHandler($this->payments);
         $payHandler->handle($payCommand);
     }
 }

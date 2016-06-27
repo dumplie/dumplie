@@ -13,7 +13,6 @@ use Dumplie\Domain\Inventory\Products;
 use Dumplie\Domain\SharedKernel\Money\Price;
 use Dumplie\Domain\SharedKernel\Product\SKU;
 use Dumplie\Infrastructure\InMemory\Inventory\InMemoryProducts;
-use Dumplie\Infrastructure\InMemory\Transaction\Factory;
 
 class ProductTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,19 +39,14 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     function setUp()
     {
         $this->products = new InMemoryProducts([]);
-        $transactionFactory = new Factory();
-
         $this->createProductHandler = new CreateProductHandler(
-            $this->products,
-            $transactionFactory
+            $this->products
         );
         $this->removeProductFromStockHandler = new RemoveProductFromStockHandler(
-            $this->products,
-            $transactionFactory
+            $this->products
         );
         $this->putBackProductToStockHandler = new PutBackProductToStockHandler(
-            $this->products,
-            $transactionFactory
+            $this->products
         );
     }
 
@@ -64,7 +58,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
             'EUR',
             false
         ));
-        
+
         $product = $this->products->getBySku(new SKU('dumplie-sku-1'));
         $this->assertEquals(
             new Product(
@@ -75,7 +69,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
             $product
         );
     }
-    
+
     function test_that_removes_product_from_stock()
     {
         $this->createProductHandler->handle(new CreateProduct(
@@ -84,14 +78,14 @@ class ProductTest extends \PHPUnit_Framework_TestCase
             'EUR',
             true
         ));
-        
+
         $this
             ->removeProductFromStockHandler
             ->handle(new RemoveProductFromStock(
                 'dumplie-sku-1'
             ))
         ;
-        
+
         $product = $this->products->getBySku(new SKU('dumplie-sku-1'));
         $this->assertEquals(
             new Product(
@@ -102,7 +96,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
             $product
         );
     }
-    
+
     function test_that_put_back_product_to_stock()
     {
         $this->createProductHandler->handle(new CreateProduct(
@@ -118,7 +112,7 @@ class ProductTest extends \PHPUnit_Framework_TestCase
                 'dumplie-sku-1'
             ))
         ;
-        
+
         $this
             ->putBackProductToStockHandler
             ->handle(new PutBackProductToStock(

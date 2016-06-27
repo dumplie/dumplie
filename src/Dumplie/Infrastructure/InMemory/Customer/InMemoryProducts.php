@@ -42,7 +42,7 @@ final class InMemoryProducts implements Products
     public function getBySku(SKU $sku) : Product
     {
         if (!array_key_exists((string) $sku, $this->products)) {
-            throw ProductNotFoundException::bySku($sku);
+            throw ProductNotFoundException::bySku((string) $sku);
         }
 
         return $this->products[(string) $sku];

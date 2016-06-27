@@ -4,7 +4,6 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\Customer;
 
-use Dumplie\Application\Transaction\Factory;
 use Dumplie\Domain\Customer\Address;
 use Dumplie\Domain\Customer\CartId;
 use Dumplie\Domain\Customer\Checkouts;
@@ -18,17 +17,11 @@ final class ChangeShippingAddressHandler
     private $checkouts;
 
     /**
-     * @var Factory
-     */
-    private $factory;
-
-    /**
      * @param Checkouts $checkouts
      */
-    public function __construct(Checkouts $checkouts, Factory $factory)
+    public function __construct(Checkouts $checkouts)
     {
         $this->checkouts = $checkouts;
-        $this->factory = $factory;
     }
 
     /**
@@ -45,14 +38,7 @@ final class ChangeShippingAddressHandler
             $command->countryIso2Code()
         );
 
-        $transaction = $this->factory->open();
-
-        try {
-            $checkout = $this->checkouts->getForCart(new CartId($command->cartId()));
-            $checkout->changeShippingAddress($shippingAddress);
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollback();
-        }
+        $checkout = $this->checkouts->getForCart(new CartId($command->cartId()));
+        $checkout->changeShippingAddress($shippingAddress);
     }
 }

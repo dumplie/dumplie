@@ -4,8 +4,13 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\CustomerService;
 
-final class CreatePayment
+use Dumplie\Application\Command\Command;
+use Dumplie\Application\Command\CommandSerialize;
+
+final class CreatePayment implements Command
 {
+    use CommandSerialize;
+    
     /**
      * @var string
      */

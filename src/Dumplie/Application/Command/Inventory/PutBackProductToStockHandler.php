@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\Inventory;
 
-use Dumplie\Application\Transaction\Factory;
+use Dumplie\Domain\Inventory\Exception\ProductNotFound;
 use Dumplie\Domain\Inventory\Products;
 use Dumplie\Domain\SharedKernel\Product\SKU;
 
@@ -16,39 +16,20 @@ final class PutBackProductToStockHandler
     private $products;
 
     /**
-     * @var Factory
-     */
-    private $transactionFactory;
-
-    /**
-     * PutBackProductToStockHandler constructor.
-     *
      * @param Products $products
-     * @param Factory  $factory
      */
-    public function __construct(Products $products, Factory $factory)
+    public function __construct(Products $products)
     {
         $this->products = $products;
-        $this->transactionFactory = $factory;
     }
 
     /**
      * @param PutBackProductToStock $command
-     *
-     * @throws \Exception
+     * @throws ProductNotFound
      */
     public function handle(PutBackProductToStock $command)
     {
-        $transaction = $this->transactionFactory->open();
-
-        try {
-            $product = $this->products->getBySku(new SKU($command->sku()));
-            $product->putBackToStock();
-
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollback();
-            throw $e;
-        }
+        $product = $this->products->getBySku(new SKU($command->sku()));
+        $product->putBackToStock();
     }
 }

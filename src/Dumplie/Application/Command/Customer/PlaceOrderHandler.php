@@ -4,7 +4,6 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\Customer;
 
-use Dumplie\Application\Transaction\Factory;
 use Dumplie\Domain\Customer\CartId;
 use Dumplie\Domain\Customer\Carts;
 use Dumplie\Domain\Customer\Checkouts;
@@ -26,11 +25,6 @@ final class PlaceOrderHandler
     private $checkouts;
 
     /**
-     * @var Factory
-     */
-    private $factory;
-
-    /**
      * @var Products
      */
     private $products;
@@ -45,13 +39,11 @@ final class PlaceOrderHandler
      * @param Products $products
      * @param Checkouts $checkouts
      * @param Orders $orders
-     * @param Factory $factory
      */
-    public function __construct(Carts $carts, Products $products, Checkouts $checkouts, Orders $orders, Factory $factory)
+    public function __construct(Carts $carts, Products $products, Checkouts $checkouts, Orders $orders)
     {
         $this->carts = $carts;
         $this->checkouts = $checkouts;
-        $this->factory = $factory;
         $this->products = $products;
         $this->orders = $orders;
     }
@@ -63,25 +55,17 @@ final class PlaceOrderHandler
     {
         $cartId = new CartId($command->cartId());
         $orderId = new OrderId($command->orderId());
-        $transaction = $this->factory->open();
 
         if ($this->orders->exists($orderId)) {
             throw OrderAlreadyExistsException::withId($orderId);
         }
 
-        try {
-            $checkout = $this->checkouts->getForCart($cartId);
-            $order = $checkout->placeOrder($orderId, $this->products, $this->carts);
+        $checkout = $this->checkouts->getForCart($cartId);
+        $order = $checkout->placeOrder($orderId, $this->products, $this->carts);
 
-            $this->orders->add($order);
+        $this->orders->add($order);
 
-            $this->checkouts->removeForCart($cartId);
-            $this->carts->remove($cartId);
-
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollback();
-            throw $e;
-        }
+        $this->checkouts->removeForCart($cartId);
+        $this->carts->remove($cartId);
     }
 }

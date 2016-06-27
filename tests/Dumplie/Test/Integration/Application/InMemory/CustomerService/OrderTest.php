@@ -15,7 +15,6 @@ use Dumplie\Application\Command\CustomerService\SendOrderHandler;
 use Dumplie\Domain\CustomerService\Order;
 use Dumplie\Domain\CustomerService\Orders;
 use Dumplie\Infrastructure\InMemory\CustomerService\InMemoryOrders;
-use Dumplie\Infrastructure\InMemory\Transaction\Factory;
 
 class OrderTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,66 +28,60 @@ class OrderTest extends \PHPUnit_Framework_TestCase
      */
     private $orders;
 
-    /**
-     * @var Factory
-     */
-    private $transactionFactory;
-
     function setUp()
     {
         $this->order = new Order();
         $this->orders = new InMemoryOrders([$this->order]);
-        $this->transactionFactory = new Factory();
     }
 
     function test_accept_order()
     {
         $acceptCommand = new AcceptOrder($this->order->id());
-        $acceptHandler = new AcceptOrderHandler($this->orders, $this->transactionFactory);
+        $acceptHandler = new AcceptOrderHandler($this->orders);
         $acceptHandler->handle($acceptCommand);
     }
 
     function test_reject_order()
     {
         $rejectCommand = new RejectOrder($this->order->id());
-        $rejectHandler = new RejectOrderHandler($this->orders, $this->transactionFactory);
+        $rejectHandler = new RejectOrderHandler($this->orders);
         $rejectHandler->handle($rejectCommand);
     }
 
     function test_prepare_order()
     {
         $acceptCommand = new AcceptOrder($this->order->id());
-        $acceptHandler = new AcceptOrderHandler($this->orders, $this->transactionFactory);
+        $acceptHandler = new AcceptOrderHandler($this->orders);
         $acceptHandler->handle($acceptCommand);
 
         $prepareCommand = new PrepareOrder($this->order->id());
-        $prepareHandler = new PrepareOrderHandler($this->orders, $this->transactionFactory);
+        $prepareHandler = new PrepareOrderHandler($this->orders);
         $prepareHandler->handle($prepareCommand);
     }
 
     function test_refund_order()
     {
         $acceptCommand = new AcceptOrder($this->order->id());
-        $acceptHandler = new AcceptOrderHandler($this->orders, $this->transactionFactory);
+        $acceptHandler = new AcceptOrderHandler($this->orders);
         $acceptHandler->handle($acceptCommand);
 
         $refundCommand = new RefundOrder($this->order->id());
-        $refundHandler = new RefundOrderHandler($this->orders, $this->transactionFactory);
+        $refundHandler = new RefundOrderHandler($this->orders);
         $refundHandler->handle($refundCommand);
     }
 
     function test_send_order()
     {
         $acceptCommand = new AcceptOrder($this->order->id());
-        $acceptHandler = new AcceptOrderHandler($this->orders, $this->transactionFactory);
+        $acceptHandler = new AcceptOrderHandler($this->orders);
         $acceptHandler->handle($acceptCommand);
 
         $prepareCommand = new PrepareOrder($this->order->id());
-        $prepareHandler = new PrepareOrderHandler($this->orders, $this->transactionFactory);
+        $prepareHandler = new PrepareOrderHandler($this->orders);
         $prepareHandler->handle($prepareCommand);
 
         $sendCommand = new SendOrder($this->order->id());
-        $sendHandler = new SendOrderHandler($this->orders, $this->transactionFactory);
+        $sendHandler = new SendOrderHandler($this->orders);
         $sendHandler->handle($sendCommand);
     }
 }

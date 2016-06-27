@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\CustomerService;
 
-use Dumplie\Application\Transaction\Factory;
+use Dumplie\Domain\CustomerService\Exception\OrderNotFoundException;
 use Dumplie\Domain\CustomerService\OrderId;
 use Dumplie\Domain\CustomerService\Orders;
 use Dumplie\Domain\CustomerService\Payment;
@@ -21,42 +21,24 @@ final class CreatePaymentHandler
      * @var Payments
      */
     private $payments;
-    /**
-     * @var Factory
-     */
-    private $factory;
 
     /**
-     * PayPaymentHandler constructor.
-     *
      * @param Orders   $orders
      * @param Payments $payments
-     * @param Factory  $factory
      */
-    public function __construct(Orders $orders, Payments $payments, Factory $factory)
+    public function __construct(Orders $orders, Payments $payments)
     {
         $this->orders = $orders;
         $this->payments = $payments;
-        $this->factory = $factory;
     }
 
     /**
      * @param CreatePayment $command
-     *
-     * @throws \Exception
+     * @throws OrderNotFoundException
      */
     public function handle(CreatePayment $command)
     {
-        $transaction = $this->factory->open();
-
-        try {
-            $order = $this->orders->getById(new OrderId($command->orderId()));
-            $this->payments->add(new Payment($order));
-            
-            $transaction->commit();
-        } catch (\Exception $e) {
-            $transaction->rollback();
-            throw $e;
-        }
+        $order = $this->orders->getById(new OrderId($command->orderId()));
+        $this->payments->add(new Payment($order));
     }
 }

@@ -25,7 +25,6 @@ use Dumplie\Infrastructure\InMemory\Customer\InMemoryCarts;
 use Dumplie\Infrastructure\InMemory\Customer\InMemoryCheckouts;
 use Dumplie\Infrastructure\InMemory\Customer\InMemoryOrders;
 use Dumplie\Infrastructure\InMemory\Customer\InMemoryProducts;
-use Dumplie\Infrastructure\InMemory\Transaction\Factory;
 
 final class OrderTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,12 +48,6 @@ final class OrderTest extends \PHPUnit_Framework_TestCase
      */
     private $orders;
 
-    /**
-     * @var Factory
-     */
-    private $factory;
-
-
     function setUp()
     {
         $this->checkouts = new InMemoryCheckouts();
@@ -64,7 +57,6 @@ final class OrderTest extends \PHPUnit_Framework_TestCase
             new Product(new SKU('SKU_2'), Price::EUR(2500), true)
         ));
         $this->orders = new InMemoryOrders();
-        $this->factory = new Factory();
     }
 
     function test_placing_new_order()
@@ -75,7 +67,7 @@ final class OrderTest extends \PHPUnit_Framework_TestCase
 
         $orderId = OrderId::generate();
         $placeOrderCommand = new PlaceOrder((string) $cartId, (string) $orderId);
-        $placeOrderHandler = new PlaceOrderHandler($this->carts, $this->products, $this->checkouts, $this->orders, $this->factory);
+        $placeOrderHandler = new PlaceOrderHandler($this->carts, $this->products, $this->checkouts, $this->orders);
 
         $placeOrderHandler->handle($placeOrderCommand);
 
@@ -95,12 +87,12 @@ final class OrderTest extends \PHPUnit_Framework_TestCase
 
         $orderId = OrderId::generate();
         $placeOrderCommand = new PlaceOrder((string) $cartId, (string) $orderId);
-        $placeOrderHandler = new PlaceOrderHandler($this->carts, $this->products, $this->checkouts, $this->orders, $this->factory);
+        $placeOrderHandler = new PlaceOrderHandler($this->carts, $this->products, $this->checkouts, $this->orders);
 
         $placeOrderHandler->handle($placeOrderCommand);
 
         $placeOrderCommand = new PlaceOrder((string) $cartId, (string) $orderId);
-        $placeOrderHandler = new PlaceOrderHandler($this->carts, $this->products, $this->checkouts, $this->orders, $this->factory);
+        $placeOrderHandler = new PlaceOrderHandler($this->carts, $this->products, $this->checkouts, $this->orders);
 
         $placeOrderHandler->handle($placeOrderCommand);
     }
@@ -113,11 +105,11 @@ final class OrderTest extends \PHPUnit_Framework_TestCase
     {
         $cartId = CartId::generate();
         $command = new CreateCart((string) $cartId, $currency);
-        $handler = new CreateCartHandler($this->carts, $this->factory);
+        $handler = new CreateCartHandler($this->carts);
 
         $handler->handle($command);
 
-        $addToCartHandler = new AddToCartHandler($this->products, $this->carts, $this->factory);
+        $addToCartHandler = new AddToCartHandler($this->products, $this->carts);
 
         foreach ($skuCodes as $sku) {
             $addToCartCommand = new AddToCart($sku, 1, (string) $cartId);
@@ -142,7 +134,7 @@ final class OrderTest extends \PHPUnit_Framework_TestCase
             'Kraków',
             'PL'
         );
-        $checkoutHandler = new NewCheckoutHandler($this->checkouts, $this->carts, $this->factory);
+        $checkoutHandler = new NewCheckoutHandler($this->checkouts, $this->carts);
         $checkoutHandler->handle($checkoutCommand);
     }
 }

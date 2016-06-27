@@ -4,8 +4,13 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\Customer;
 
-final class RemoveFromCart
+use Dumplie\Application\Command\Command;
+use Dumplie\Application\Command\CommandSerialize;
+
+final class RemoveFromCart implements Command
 {
+    use CommandSerialize;
+    
     /**
      * @var string
      */

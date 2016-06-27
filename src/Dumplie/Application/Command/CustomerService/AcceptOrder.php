@@ -4,8 +4,12 @@ declare (strict_types = 1);
 
 namespace Dumplie\Application\Command\CustomerService;
 
-class AcceptOrder
+use Dumplie\Application\Command\Command;
+use Dumplie\Application\Command\CommandSerialize;
+
+class AcceptOrder implements Command
 {
+    use CommandSerialize;
     /**
      * @var string
      */

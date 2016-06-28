@@ -18,6 +18,11 @@ final class MetadataAccessObject
     private $storage;
 
     /**
+     * @var string
+     */
+    private $schema;
+
+    /**
      * @var TypeSchema
      */
     private $typeSchema;
@@ -28,28 +33,31 @@ final class MetadataAccessObject
     private $hydrator;
 
     /**
-     * @param Storage $storage
+     * @param Storage    $storage
+     * @param string     $schema
      * @param TypeSchema $typeSchema
-     * @param Hydrator $hydrator
+     * @param Hydrator   $hydrator
      */
-    public function __construct(Storage $storage, TypeSchema $typeSchema, Hydrator $hydrator)
+    public function __construct(Storage $storage, string $schema, TypeSchema $typeSchema, Hydrator $hydrator)
     {
         $this->storage = $storage;
+        $this->schema = $schema;
         $this->typeSchema = $typeSchema;
         $this->hydrator = $hydrator;
     }
 
     /**
      * @param array $criteria
+     *
      * @return Metadata|null
      * @throws \Dumplie\Application\Exception\Metadata\HydrationException
      */
     public function findBy(array $criteria = [])
     {
-        $data = $this->storage->findBy($this->typeSchema->name(), $criteria);
+        $data = $this->storage->findBy($this->schema, $this->typeSchema->name(), $criteria);
 
         if (count($data) === 0 || !array_key_exists('id', $data)) {
-            return ;
+            return;
         }
 
         return $this->hydrator->hydrate($this->typeSchema, $data);
@@ -57,6 +65,7 @@ final class MetadataAccessObject
 
     /**
      * @param array $criteria
+     *
      * @return Metadata
      * @throws HydrationException
      * @throws InvalidUUIDFormatException
@@ -76,6 +85,7 @@ final class MetadataAccessObject
 
     /**
      * @param Metadata $metadata
+     *
      * @throws InvalidArgumentException
      */
     public function save(Metadata $metadata)
@@ -91,19 +101,25 @@ final class MetadataAccessObject
             $fieldsData[$fieldName] = $fieldDefinition->serialize($value);
         }
 
-        $this->storage->save($this->typeSchema->name(), (string) $metadata->id(), $fieldsData);
+        $this->storage->save(
+            $this->schema,
+            $this->typeSchema->name(),
+            (string) $metadata->id(),
+            $fieldsData
+        );
     }
 
     /**
      * @param MetadataId $id
+     *
      * @throws NotFoundException
      */
     public function delete(MetadataId $id)
     {
-        if (!$this->storage->has($this->typeSchema->name(), (string) $id)) {
+        if (!$this->storage->has($this->schema, $this->typeSchema->name(), (string) $id)) {
             throw NotFoundException::metadata($id);
         }
 
-        $this->storage->delete($this->typeSchema->name(), (string) $id);
+        $this->storage->delete($this->schema, $this->typeSchema->name(), (string) $id);
     }
 }

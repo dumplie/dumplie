@@ -55,4 +55,16 @@ class TextFieldSpec extends ObjectBehavior
     {
         $this->isValid(new \DateTime())->shouldReturn(false);
     }
+
+    function it_is_of_text_type()
+    {
+        $this->type()->__toString()->shouldReturn('text');
+    }
+
+    function it_has_options()
+    {
+        $this->beConstructedWith(null, false, ['length' => 10, 'unique' => true, 'index' => true]);
+
+        $this->options()->shouldReturn(['length' => 10, 'unique' => true, 'index' => true]);
+    }
 }

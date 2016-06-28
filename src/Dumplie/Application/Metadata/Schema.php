@@ -9,11 +9,22 @@ use Dumplie\Application\Metadata\Schema\TypeSchema;
 
 final class Schema
 {
+    private $name;
+
     private $types;
 
-    public function __construct()
+    public function __construct(string $name)
     {
+        $this->name = $name;
         $this->types = [];
+    }
+
+    /**
+     * @return string
+     */
+    public function name():string
+    {
+        return $this->name;
     }
 
     /**
@@ -26,6 +37,7 @@ final class Schema
 
     /**
      * @param string $typeName
+     *
      * @return TypeSchema
      * @throws NotFoundException
      */
@@ -39,7 +51,7 @@ final class Schema
     }
 
     /**
-     * @return array
+     * @return TypeSchema[]
      */
     public function types() : array
     {

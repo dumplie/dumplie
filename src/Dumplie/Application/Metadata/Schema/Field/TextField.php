@@ -7,6 +7,7 @@ namespace Dumplie\Application\Metadata\Schema\Field;
 use Dumplie\Application\Exception\Metadata\InvalidArgumentException;
 use Dumplie\Application\Exception\Metadata\InvalidValueException;
 use Dumplie\Application\Metadata\Schema\FieldDefinition;
+use Dumplie\Application\Metadata\Schema\Type;
 
 final class TextField implements FieldDefinition
 {
@@ -23,13 +24,20 @@ final class TextField implements FieldDefinition
     private $nullable;
 
     /**
-     * @param string|null $default
-     * @param bool $nullable
+     * @var array
      */
-    public function __construct(string $default = null, bool $nullable = false)
+    private $options = [];
+
+    /**
+     * @param string|null $default
+     * @param bool        $nullable
+     * @param array       $options
+     */
+    public function __construct(string $default = null, bool $nullable = false, array $options = [])
     {
         $this->nullable = $nullable;
         $this->default = $default;
+        $this->options = $options;
     }
 
     /**
@@ -38,6 +46,22 @@ final class TextField implements FieldDefinition
     public function name() : string
     {
         return self::NAME;
+    }
+
+    /**
+     * @return Type
+     */
+    public function type() : Type
+    {
+        return new Type(Type::TYPE_TEXT);
+    }
+
+    /**
+     * @return array
+     */
+    public function options() : array
+    {
+        return $this->options;
     }
 
     /**

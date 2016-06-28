@@ -42,6 +42,11 @@ final class MetadataAccessRegistry
      */
     public function getMAO(string $typeName) : MetadataAccessObject
     {
-        return new MetadataAccessObject($this->storage, $this->schema->get($typeName), $this->hydrator);
+        return new MetadataAccessObject(
+            $this->storage,
+            $this->schema->name(),
+            $this->schema->get($typeName),
+            $this->hydrator
+        );
     }
 }

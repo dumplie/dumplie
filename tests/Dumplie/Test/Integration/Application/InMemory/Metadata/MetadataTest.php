@@ -27,7 +27,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     {
         $hydrator = new DefaultHydrator();
 
-        $schema = new Schema();
+        $schema = new Schema("inventory");
 
         $schema->add(new Schema\TypeSchema("product", [
             "sku" => new Schema\Field\TextField(),
@@ -64,7 +64,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
             "name" => "Super Product"
         ]));
 
-        $this->assertTrue($this->storage->has("product", (string) $id));
+        $this->assertTrue($this->storage->has("inventory", "product", (string) $id));
 
         $metadata = $mao->findBy(["sku" => "DUMPLIE_SKU_1"]);
 
@@ -106,6 +106,6 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
 
         $mao->delete($id);
 
-        $this->assertFalse($this->storage->has("product", (string) $id));
+        $this->assertFalse($this->storage->has("inventory", "product", (string) $id));
     }
 }

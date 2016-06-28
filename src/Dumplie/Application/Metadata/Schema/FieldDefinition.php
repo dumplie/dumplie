@@ -12,6 +12,16 @@ interface FieldDefinition
     public function name() : string;
 
     /**
+     * @return Type
+     */
+    public function type() : Type;
+
+    /**
+     * @return array
+     */
+    public function options() : array;
+
+    /**
      * @return mixed
      */
     public function defaultValue();

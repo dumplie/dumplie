@@ -43,19 +43,26 @@ class DoctrineStorage implements Storage
      */
     public function create(Schema $schema)
     {
-        $currentSchema = $this->connection->getSchemaManager()->createSchema();
+        $currentDbSchema = $this->connection->getSchemaManager()->createSchema();
+
+        $dbSchema = new DBALSchema(
+            $currentDbSchema->getTables(),
+            $currentDbSchema->getSequences(),
+            $this->connection->getSchemaManager()->createSchemaConfig()
+        );
 
         foreach ($schema->types() as $type) {
             $tableName = $this->tableName($schema->name(), $type->name());
 
-            if ($currentSchema->hasTable($tableName)) {
+            if ($dbSchema->hasTable($tableName)) {
                 throw DoctrineStorageException::tableAlreadyExists($tableName);
             }
 
-            $this->createTable($currentSchema, $tableName, $type);
+            $this->createTable($dbSchema, $tableName, $type);
         }
 
-        $queries = $currentSchema->toSql($this->connection->getDatabasePlatform());
+        $queries = $dbSchema->toSql($this->connection->getDatabasePlatform());
+
         $this->executeQueries($queries);
     }
 
@@ -195,7 +202,7 @@ class DoctrineStorage implements Storage
     private function createTable(DBALSchema $schema, string $tableName, TypeSchema $type)
     {
         $table = $schema->createTable($tableName);
-        $table->addColumn('id', 'string');
+        $table->addColumn('id', 'guid');
         $table->setPrimaryKey(['id']);
 
         foreach ($type->getDefinitions(['id']) as $field => $definition) {

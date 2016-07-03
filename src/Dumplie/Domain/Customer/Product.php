@@ -11,7 +11,7 @@ use Dumplie\Domain\SharedKernel\Product\SKU;
 final class Product
 {
     /**
-     * @var string
+     * @var SKU
      */
     private $sku;
 

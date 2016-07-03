@@ -12,7 +12,7 @@ class UUID
     /**
      * @var string
      */
-    private $value;
+    protected $id;
 
     /**
      * @param string $value
@@ -27,7 +27,7 @@ class UUID
             throw new InvalidUUIDFormatException();
         }
 
-        $this->value = (string) $value;
+        $this->id = (string) $value;
     }
 
     /**
@@ -35,7 +35,7 @@ class UUID
      */
     public function __toString() : string
     {
-        return (string) $this->value;
+        return (string) $this->id;
     }
 
     /**
@@ -45,6 +45,6 @@ class UUID
      */
     public function isEqual(UUID $id) : bool
     {
-        return $this->value === $id->value;
+        return $this->id === $id->id;
     }
 }

@@ -13,8 +13,10 @@ use Dumplie\Infrastructure\Doctrine\Dbal\Metadata\DoctrineStorage;
 use Dumplie\Infrastructure\Doctrine\Dbal\Metadata\DoctrineStorageException;
 use Dumplie\Infrastructure\Doctrine\Dbal\Metadata\Field\TextMapping;
 use Dumplie\Infrastructure\Doctrine\Dbal\Metadata\TypeRegistry;
+use Dumplie\Test\Doctrine\DbalTestCase;
+use Ramsey\Uuid\Uuid;
 
-class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
+class DoctrineStorageTest extends DbalTestCase
 {
     /**
      * @var Connection
@@ -33,7 +35,11 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->connection = DriverManager::getConnection(['url' => 'sqlite:///:memory:']);
+        $this->connection = DriverManager::getConnection(
+            json_decode(DUMPLIE_TEST_DB_CONNECTION, true)
+        );
+
+        $this->createDatabase($this->connection);
 
         if ($this->connection->getSchemaManager()->tablesExist(DoctrineStorage::TABLE_PREFIX . '_sample_meta')) {
             $this->connection->getSchemaManager()->dropTable(DoctrineStorage::TABLE_PREFIX . '_sample_meta');
@@ -43,7 +49,7 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
             'meta',
             [
                 'id' => new TextField(),
-                'field' => new TextField(null, false, ['index' => true])
+                'text' => new TextField(null, false, ['index' => true])
             ]
         );
 
@@ -119,7 +125,7 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
             ->getSchemaManager()
             ->listTableColumns(DoctrineStorage::TABLE_PREFIX . '_sample_meta');
 
-        $this->assertArrayHasKey('field', $result);
+        $this->assertArrayHasKey('text', $result);
     }
 
     public function test_drop()
@@ -133,16 +139,17 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
 
     public function test_find_by_returns_matching_results()
     {
+        $uuid = (string) Uuid::uuid4();
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', 'meta-id', ['field' => 'value']);
+        $this->storage->save('sample', 'meta', $uuid, ['text' => 'value']);
 
-        $result = $this->storage->findBy('sample', 'meta', ['id' => 'meta-id']);
+        $result = $this->storage->findBy('sample', 'meta', ['id' => $uuid]);
 
         $this->assertEquals(
             [
                 [
-                    'id' => 'meta-id',
-                    'field' => 'value'
+                    'id' => $uuid,
+                    'text' => 'value'
                 ]
             ],
             $result
@@ -152,30 +159,31 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
     public function test_find_by_returns_empty_list_when_no_matches_found()
     {
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', 'meta-id', ['field' => 'value']);
+        $this->storage->save('sample', 'meta', (string) Uuid::uuid4(), ['text' => 'value']);
 
-        $result = $this->storage->findBy('sample', 'meta', ['id' => 'fake-id']);
+        $result = $this->storage->findBy('sample', 'meta', ['id' => (string) Uuid::uuid4()]);
 
         $this->assertEmpty($result);
     }
 
     public function test_saving_with_insert()
     {
+        $uuid = (string) Uuid::uuid4();
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', 'meta-id', ['field' => 'value']);
+        $this->storage->save('sample', 'meta', $uuid, ['text' => 'value']);
 
         $result = $this->connection
             ->createQueryBuilder()
             ->select('*')
             ->from(DoctrineStorage::TABLE_PREFIX . '_sample_meta')
-            ->where('id = \'meta-id\'')
+            ->where('id = \'' . $uuid . '\'')
             ->execute()
             ->fetch();
 
         $this->assertEquals(
             [
-                'id' => 'meta-id',
-                'field' => 'value'
+                'id' => $uuid,
+                'text' => 'value'
             ],
             $result
         );
@@ -183,23 +191,25 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
 
     public function test_saving_with_update()
     {
+        $uuid = (string) Uuid::uuid4();
+
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', 'meta-id', ['field' => 'old-value']);
-        $this->storage->save('sample', 'meta', 'meta-id', ['field' => 'new-value']);
+        $this->storage->save('sample', 'meta', $uuid, ['text' => 'old-value']);
+        $this->storage->save('sample', 'meta', $uuid, ['text' => 'new-value']);
 
         $result = $this->connection
             ->createQueryBuilder()
             ->select('*')
             ->from(DoctrineStorage::TABLE_PREFIX . '_sample_meta')
             ->where('id = :id')
-            ->setParameter('id', 'meta-id')
+            ->setParameter('id', $uuid)
             ->execute()
             ->fetch();
 
         $this->assertEquals(
             [
-                'id' => 'meta-id',
-                'field' => 'new-value',
+                'id' => $uuid,
+                'text' => 'new-value',
             ],
             $result
         );
@@ -207,22 +217,24 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
 
     public function test_has()
     {
+        $uuid = (string) Uuid::uuid4();
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', 'meta-id', ['field' => 'value']);
+        $this->storage->save('sample', 'meta', $uuid, ['text' => 'value']);
 
-        $result = $this->storage->has('sample', 'meta', 'meta-id');
+        $result = $this->storage->has('sample', 'meta', $uuid);
 
         $this->assertTrue($result);
     }
 
     public function test_delete()
     {
+        $uuid = (string) Uuid::uuid4();
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', 'meta-id', ['field' => 'value']);
+        $this->storage->save('sample', 'meta', $uuid, ['text' => 'value']);
 
-        $this->storage->delete('sample', 'meta', 'meta-id');
+        $this->storage->delete('sample', 'meta', $uuid);
 
-        $result = $this->storage->has('sample', 'meta', 'meta-id');
+        $result = $this->storage->has('sample', 'meta', $uuid);
 
         $this->assertTrue($result);
     }

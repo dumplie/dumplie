@@ -16,9 +16,11 @@
         "phpspec/phpspec": "^2.5",
         "phpspec/prophecy": "^1.6",
 
+        "doctrine/orm": "^2.5",
         "doctrine/dbal": "^2.5"
     },
     "suggest": {
+        "doctrine/orm": "Allows usage of Doctrine ORM as a storage for application",
         "doctrine/dbal": "Allows usage of Doctrine DBAL as a storage for Metadata"
     },
     "autoload": {

@@ -38,3 +38,17 @@ alias php='docker run --rm --name php -it -v "$PWD":/usr/src/app -w /usr/src/app
 php bin/phpspec run
 php bin/phpunit
 ```
+
+
+### Tests
+
+Dumplie idea is to be as much technology agnostic as possible, however we support some popular software like for 
+example ``mysql`` or ``postgresql``. 
+
+In order to execute integration tests against specific database use ``DUMPLIE_TEST_DB_CONNECTION`` env variable. 
+
+Example:
+```
+$ export DUMPLIE_TEST_DB_CONNECTION='{"driver":"pdo_pgsql","host":"127.0.0.1","dbname":"dumplie","user":"docker","password":"docker","port":32771}' && bin/phpunit
+$ export DUMPLIE_TEST_DB_CONNECTION='{"driver":"pdo_mysql","host":"127.0.0.1","dbname":"dumplie","user":"root","password":"root","port":32777}' && bin/phpunit
+```

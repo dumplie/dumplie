@@ -45,7 +45,7 @@ class TextMapping implements TypeMapping
     {
         $table->addColumn(
             $name,
-            'text',
+            'string',
             [
                 'notnull' => !$definition->isNullable(),
                 'default' => $definition->defaultValue(),

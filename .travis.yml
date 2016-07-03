@@ -1,10 +1,18 @@
 language: php
 
+services:
+  - mysql
+  - postgresql
+
 matrix:
   include:
-    - php: 7.0
+    - php: 7.0 # sqlite
       env: DEPENDENCIES='low'
-    - php: 7.0
+    - php: 7.0 # sqlite
+    - php: 7.0 # mysql
+      env: DUMPLIE_TEST_DB_CONNECTION='{"driver":"pdo_mysql","dbname":"dumplie","user":"root","password":""}'
+    - php: 7.0 # pgsql
+      env: DUMPLIE_TEST_DB_CONNECTION='{"driver":"pdo_pgsql","dbname":"dumplie","user":"postgres","password":""}'
 
 before_install:
   - composer self-update
@@ -16,4 +24,4 @@ install:
 
 script:
   - ./bin/phpspec run --format=pretty
-  - ./bin/phpunit --testdox
+  - ./bin/phpunit

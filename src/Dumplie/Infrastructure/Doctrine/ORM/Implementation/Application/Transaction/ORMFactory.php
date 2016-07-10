@@ -5,8 +5,10 @@ declare (strict_types = 1);
 namespace Dumplie\Infrastructure\Doctrine\ORM\Implementation\Application\Transaction;
 
 use Doctrine\ORM\EntityManager;
+use Dumplie\Application\Transaction\Factory;
+use Dumplie\Application\Transaction\Transaction;
 
-final class Factory implements \Dumplie\Application\Transaction\Factory
+final class ORMFactory implements Factory
 {
     /**
      * @var EntityManager
@@ -22,12 +24,12 @@ final class Factory implements \Dumplie\Application\Transaction\Factory
     }
 
     /**
-     * @return \Dumplie\Application\Transaction\Transaction
+     * @return Transaction
      */
-    public function open() : \Dumplie\Application\Transaction\Transaction
+    public function open() : Transaction
     {
         $this->entityManager->beginTransaction();
 
-        return new Transaction($this->entityManager);
+        return new ORMTransaction($this->entityManager);
     }
 }

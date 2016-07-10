@@ -4,6 +4,8 @@ namespace Spec\Dumplie\Domain\CustomerService;
 
 use Dumplie\Domain\CustomerService\Exception\InvalidTransitionException;
 use Dumplie\Domain\CustomerService\Order;
+use Dumplie\Domain\CustomerService\OrderId;
+use Dumplie\Domain\CustomerService\PaymentId;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -11,7 +13,7 @@ class PaymentSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith(new Order());
+        $this->beConstructedWith(PaymentId::generate(), new Order(OrderId::generate(), new \DateTimeImmutable()));
     }
 
     function it_can_not_be_paid_when_already_paid() {

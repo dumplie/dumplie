@@ -52,7 +52,6 @@ final class Order
         return $this->id;
     }
 
-
     /**
      * @param OrderItem $item
      */

@@ -10,20 +10,25 @@ use Dumplie\Application\Command\CommandSerialize;
 final class CreatePayment implements Command
 {
     use CommandSerialize;
-    
+
     /**
      * @var string
      */
     private $orderId;
 
     /**
-     * CreatePayment constructor.
-     *
-     * @param string $orderId
+     * @var string
      */
-    public function __construct(string $orderId)
+    private $paymentId;
+
+    /**
+     * @param string $orderId
+     * @param string $paymentId
+     */
+    public function __construct(string $orderId, string $paymentId)
     {
         $this->orderId = $orderId;
+        $this->paymentId = $paymentId;
     }
 
     /**
@@ -32,5 +37,13 @@ final class CreatePayment implements Command
     public function orderId() : string
     {
         return $this->orderId;
+    }
+
+    /**
+     * @return string
+     */
+    public function paymentId() : string
+    {
+        return $this->paymentId;
     }
 }

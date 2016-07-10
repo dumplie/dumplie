@@ -9,52 +9,24 @@ use Dumplie\Application\Command\CustomerService\PayPaymentHandler;
 use Dumplie\Application\Command\CustomerService\RejectPayment;
 use Dumplie\Application\Command\CustomerService\RejectPaymentHandler;
 use Dumplie\Domain\CustomerService\Order;
+use Dumplie\Domain\CustomerService\OrderId;
 use Dumplie\Domain\CustomerService\Payment;
 use Dumplie\Domain\CustomerService\Payments;
 use Dumplie\Infrastructure\InMemory\CustomerService\InMemoryOrders;
 use Dumplie\Infrastructure\InMemory\CustomerService\InMemoryPayments;
+use Dumplie\Infrastructure\InMemory\InMemoryEventLog;
+use Dumplie\Test\Context\Memory\InMemoryCustomerServiceContext;
+use Dumplie\Test\Context\Tactician\TacticianFactory;
+use Dumplie\Test\Integration\Application\Generic\CustomerService\PaymentTestCase;
 
-class PaymentTest extends \PHPUnit_Framework_TestCase
+class PaymentTest extends PaymentTestCase
 {
-    /**
-     * @var Payment
-     */
-    private $payment;
-
-    /**
-     * @var Payments
-     */
-    private $payments;
-
     function setUp()
     {
-        $this->payment = new Payment(new Order());
-        $this->payments = new InMemoryPayments([$this->payment]);
+        $this->customerServiceContext = new InMemoryCustomerServiceContext(new InMemoryEventLog(), new TacticianFactory());
     }
 
-    function test_create_payment()
+    protected function clear()
     {
-        $order = new Order();
-        $carts = new InMemoryOrders([$order]);
-
-        $command = new CreatePayment($order->id());
-        $handler = new CreatePaymentHandler($carts, $this->payments);
-
-        $handler->handle($command);
-    }
-
-    function test_pay_payment()
-    {
-        $command = new PayPayment($this->payment->id());
-        $handler = new PayPaymentHandler($this->payments);
-
-        $handler->handle($command);
-    }
-
-    function test_reject_payment()
-    {
-        $payCommand = new RejectPayment($this->payment->id());
-        $payHandler = new RejectPaymentHandler($this->payments);
-        $payHandler->handle($payCommand);
     }
 }

@@ -5,6 +5,8 @@ declare (strict_types = 1);
 namespace Dumplie\Domain\CustomerService;
 
 use Dumplie\Domain\CustomerService\Exception\InvalidTransitionException;
+use Dumplie\Domain\CustomerService\PaymentState\Paid;
+use Dumplie\Domain\CustomerService\PaymentState\Rejected;
 use Dumplie\Domain\CustomerService\PaymentState\Unpaid;
 
 final class Payment
@@ -27,6 +29,11 @@ final class Payment
     /**
      * @var null|\DateTimeInterface
      */
+    private $createdAt;
+    
+    /**
+     * @var null|\DateTimeInterface
+     */
     private $wasPaidAt;
 
     /**
@@ -35,13 +42,13 @@ final class Payment
     private $wasRejectedAt;
 
     /**
-     * Order constructor.
-     *
+     * @param PaymentId $id
      * @param Order $order
      */
-    public function __construct(Order $order)
+    public function __construct(PaymentId $id, Order $order)
     {
-        $this->id = PaymentId::generate();
+        $this->id = $id;
+        $this->createdAt = new \DateTimeImmutable();
         $this->orderId = $order->id();
         $this->state = new Unpaid();
     }
@@ -70,5 +77,21 @@ final class Payment
     {
         $this->state = $this->state->reject();
         $this->wasRejectedAt = new \DateTimeImmutable();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRejected() : bool
+    {
+        return $this->state instanceOf Rejected;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPaid() : bool
+    {
+        return $this->state instanceOf Paid;
     }
 }

@@ -53,4 +53,20 @@ final class OrderItem
     {
         return $this->sku;
     }
+
+    /**
+     * @return Price
+     */
+    public function price() : Price
+    {
+        return $this->price;
+    }
+
+    /**
+     * @return int
+     */
+    public function quantity() : int
+    {
+        return $this->quantity;
+    }
 }

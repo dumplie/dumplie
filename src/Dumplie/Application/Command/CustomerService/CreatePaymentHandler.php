@@ -8,6 +8,7 @@ use Dumplie\Domain\CustomerService\Exception\OrderNotFoundException;
 use Dumplie\Domain\CustomerService\OrderId;
 use Dumplie\Domain\CustomerService\Orders;
 use Dumplie\Domain\CustomerService\Payment;
+use Dumplie\Domain\CustomerService\PaymentId;
 use Dumplie\Domain\CustomerService\Payments;
 
 final class CreatePaymentHandler
@@ -39,6 +40,7 @@ final class CreatePaymentHandler
     public function handle(CreatePayment $command)
     {
         $order = $this->orders->getById(new OrderId($command->orderId()));
-        $this->payments->add(new Payment($order));
+        
+        $this->payments->add(new Payment(new PaymentId($command->paymentId()), $order));
     }
 }

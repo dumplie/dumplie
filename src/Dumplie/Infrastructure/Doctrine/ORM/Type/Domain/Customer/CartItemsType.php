@@ -12,7 +12,7 @@ use Dumplie\Domain\SharedKernel\Product\SKU;
 
 final class CartItemsType extends JsonArrayType
 {
-    const NAME = 'cart_items';
+    const NAME = 'customer_cart_items';
 
     /**
      * @return string

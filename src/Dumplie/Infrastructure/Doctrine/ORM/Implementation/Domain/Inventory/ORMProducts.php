@@ -10,7 +10,7 @@ use Dumplie\Domain\Inventory\Product;
 use Dumplie\Domain\Inventory\Products;
 use Dumplie\Domain\SharedKernel\Product\SKU;
 
-final class DoctrineProducts implements Products
+final class ORMProducts implements Products
 {
     /**
      * @var EntityManager
@@ -31,7 +31,7 @@ final class DoctrineProducts implements Products
      */
     public function getBySku(SKU $SKU): Product
     {
-        $product = $this->entityManager->getRepository(Product::class)->findBy(['sku' => $SKU]);
+        $product = $this->entityManager->getRepository(Product::class)->findOneBy(['sku.code' => $SKU]);
 
         if ($product === null) {
             ProductNotFound::bySku($SKU);

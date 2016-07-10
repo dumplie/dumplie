@@ -84,6 +84,22 @@ final class Price
     }
 
     /**
+     * @return int
+     */
+    public function amount() : int
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @return int
+     */
+    public function precision() : int
+    {
+        return $this->precision;
+    }
+
+    /**
      * @return string
      */
     public function currency() : string

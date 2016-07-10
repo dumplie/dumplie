@@ -5,8 +5,9 @@ declare (strict_types = 1);
 namespace Dumplie\Infrastructure\Doctrine\ORM\Implementation\Application\Transaction;
 
 use Doctrine\ORM\EntityManager;
+use Dumplie\Application\Transaction\Transaction;
 
-final class Transaction implements \Dumplie\Application\Transaction\Transaction
+final class ORMTransaction implements Transaction
 {
     /**
      * @var EntityManager

@@ -3,11 +3,17 @@
 namespace Spec\Dumplie\Domain\CustomerService;
 
 use Dumplie\Domain\CustomerService\Exception\InvalidTransitionException;
+use Dumplie\Domain\CustomerService\OrderId;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class OrderSpec extends ObjectBehavior
 {
+    function let()
+    {
+        $this->beConstructedWith(OrderId::generate(), new \DateTimeImmutable());
+    }
+
     function it_can_not_be_prepared_when_created()
     {
         $this->shouldThrow(InvalidTransitionException::class)->during('prepare');

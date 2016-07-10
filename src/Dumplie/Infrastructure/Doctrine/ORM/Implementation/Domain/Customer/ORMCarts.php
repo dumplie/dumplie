@@ -10,7 +10,7 @@ use Dumplie\Domain\Customer\CartId;
 use Dumplie\Domain\Customer\Carts;
 use Dumplie\Domain\Customer\Exception\CartNotFoundException;
 
-final class DoctrineCarts implements Carts
+final class ORMCarts implements Carts
 {
     /**
      * @var EntityManager
@@ -64,7 +64,7 @@ final class DoctrineCarts implements Carts
      */
     public function exists(CartId $cartId) : bool
     {
-        $cart = $this->entityManager->getRepository(Cart::class)->findOneBy(['id' => $cartId]);
+        $cart = $this->entityManager->getRepository(Cart::class)->findOneBy(['id.id' => $cartId]);
 
         return ($cart instanceof Cart);
     }

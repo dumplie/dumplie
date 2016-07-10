@@ -13,11 +13,13 @@ use Dumplie\Infrastructure\Doctrine\Dbal\Metadata\DoctrineStorage;
 use Dumplie\Infrastructure\Doctrine\Dbal\Metadata\DoctrineStorageException;
 use Dumplie\Infrastructure\Doctrine\Dbal\Metadata\Field\TextMapping;
 use Dumplie\Infrastructure\Doctrine\Dbal\Metadata\TypeRegistry;
-use Dumplie\Test\Doctrine\DbalTestCase;
+use Dumplie\Test\Doctrine\DBALHelper;
 use Ramsey\Uuid\Uuid;
 
-class DoctrineStorageTest extends DbalTestCase
+class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
 {
+    use DBALHelper;
+
     /**
      * @var Connection
      */
@@ -33,13 +35,16 @@ class DoctrineStorageTest extends DbalTestCase
      */
     private $storage;
 
+    public static function setUpBeforeClass()
+    {
+        self::createDatabase();
+    }
+
     public function setUp()
     {
         $this->connection = DriverManager::getConnection(
             json_decode(DUMPLIE_TEST_DB_CONNECTION, true)
         );
-
-        $this->createDatabase($this->connection);
 
         if ($this->connection->getSchemaManager()->tablesExist(DoctrineStorage::TABLE_PREFIX . '_sample_meta')) {
             $this->connection->getSchemaManager()->dropTable(DoctrineStorage::TABLE_PREFIX . '_sample_meta');

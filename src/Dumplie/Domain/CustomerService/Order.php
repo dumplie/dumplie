@@ -50,12 +50,13 @@ final class Order
     private $wasSentAt;
 
     /**
-     * Order constructor.
+     * @param OrderId $id
+     * @param \DateTimeImmutable $placedAt
      */
-    public function __construct()
+    public function __construct(OrderId $id, \DateTimeImmutable $placedAt)
     {
-        $this->id = OrderId::generate();
-        $this->wasCreated = new \DateTimeImmutable();
+        $this->id = $id;
+        $this->wasCreated = $placedAt;
         $this->state = new Created();
     }
 

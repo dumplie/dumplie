@@ -37,6 +37,8 @@ final class ExtensionMiddleware implements Middleware
             $next($command);
         } catch (\Exception $exception) {
             $this->extensionRegistry->passException($command, $exception);
+
+            throw $exception;
         }
 
         if ($command instanceof Command) {

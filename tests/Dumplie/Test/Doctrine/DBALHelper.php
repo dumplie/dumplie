@@ -6,12 +6,12 @@ namespace Dumplie\Test\Doctrine;
 
 use Doctrine\DBAL\DriverManager;
 
-class DbalTestCase extends \PHPUnit_Framework_TestCase
+trait DBALHelper
 {
     /**
      * @throws \Doctrine\DBAL\DBALException
      */
-    protected function createDatabase()
+    protected static function createDatabase()
     {
         $dbParams = json_decode(DUMPLIE_TEST_DB_CONNECTION, true);
 

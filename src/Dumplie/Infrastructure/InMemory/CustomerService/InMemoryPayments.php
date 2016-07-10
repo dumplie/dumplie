@@ -17,14 +17,14 @@ final class InMemoryPayments implements Payments
     private $payments;
 
     /**
-     * @param array|Payment[] $orders
+     * @param array|Payment[] $payments
      */
-    public function __construct(array $orders = [])
+    public function __construct(array $payments = [])
     {
         $this->payments = [];
 
-        foreach ($orders as $cart) {
-            $this->add($cart);
+        foreach ($payments as $payment) {
+            $this->add($payment);
         }
     }
 

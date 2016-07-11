@@ -1,7 +1,26 @@
 suites:
-    dumplie:
-        spec_path: ./tests/Dumplie
+    dumplie_customer:
+        spec_path: ./src/Dumplie/Customer/Tests
         spec_prefix: Spec
-        psr4_prefix: Dumplie
-        namespace: Dumplie
-        src_path: ./src/Dumplie
+        namespace: Dumplie\Customer
+        src_path: ./src
+    dumplie_customer_service:
+        spec_path: ./src/Dumplie/CustomerService/Tests
+        spec_prefix: Spec
+        namespace: Dumplie\CustomerService
+        src_path: ./src
+    dumplie_inventory:
+        spec_path: ./src/Dumplie/Inventory/Tests
+        spec_prefix: Spec
+        namespace: Dumplie\Inventory
+        src_path: ./src
+    dumplie_shared_kernel:
+        spec_path: ./src/Dumplie/SharedKernel/Tests
+        spec_prefix: Spec
+        namespace: Dumplie\SharedKernel
+        src_path: ./src
+    dumplie_metadata:
+        spec_path: ./src/Dumplie/Metadata/Tests
+        spec_prefix: Spec
+        namespace: Dumplie\Metadata
+        src_path: ./src

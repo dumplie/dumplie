@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          http://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
+
+    <entity name="Dumplie\Inventory\Domain\Product" table="dumplie_inventory_product">
+        <field name="isInStock" type="boolean" column="is_in_stock" nullable="false" />
+
+        <embedded name="sku" class="Dumplie\SharedKernel\Domain\Product\SKU" use-column-prefix="false" />
+        <embedded name="price" class="Dumplie\SharedKernel\Domain\Money\Price"/>
+    </entity>
+</doctrine-mapping>

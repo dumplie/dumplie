@@ -6,13 +6,13 @@ namespace Dumplie\Metadata\Infrastructure\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema as DBALSchema;
-use Dumplie\Metadata\Schema;
-use Dumplie\Metadata\Schema\TypeSchema;
-use Dumplie\Metadata\Storage;
+use Dumplie\Metadata\Application\Schema;
+use Dumplie\Metadata\Application\Schema\TypeSchema;
+use Dumplie\Metadata\Application\Storage;
 
 class DoctrineStorage implements Storage
 {
-    const TABLE_PREFIX = 'metadata';
+    use TableName;
 
     /**
      * @var Connection
@@ -58,7 +58,7 @@ class DoctrineStorage implements Storage
                 throw DoctrineStorageException::tableAlreadyExists($tableName);
             }
 
-            $this->createTable($dbSchema, $tableName, $type);
+            $this->createTable($dbSchema, $schema->name(), $type);
         }
 
         $queries = $dbSchema->toSql($this->connection->getDatabasePlatform());
@@ -81,7 +81,7 @@ class DoctrineStorage implements Storage
                 $targetSchema->dropTable($tableName);
             }
 
-            $this->createTable($targetSchema, $tableName, $type);
+            $this->createTable($targetSchema, $schema->name(), $type);
         }
 
         $queries = $currentSchema->getMigrateToSql($targetSchema, $this->connection->getDatabasePlatform());
@@ -124,13 +124,14 @@ class DoctrineStorage implements Storage
         $builder = $this->connection->createQueryBuilder();
         $builder->select('*');
         $builder->from($this->tableName($schema, $typeName));
+        $builder->setMaxResults(1);
 
         foreach ($criteria as $field => $value) {
             $builder->andWhere(sprintf('%1$s = :%1$s', $field));
             $builder->setParameter($field, $value);
         }
 
-        return $builder->execute()->fetchAll();
+        return $builder->execute()->fetch(\PDO::FETCH_ASSOC) ?: [];
     }
 
     /**
@@ -182,31 +183,20 @@ class DoctrineStorage implements Storage
     }
 
     /**
-     * @param string $schemaName
-     * @param string $typeName
-     *
-     * @return string
-     */
-    private function tableName(string $schemaName, string $typeName): string
-    {
-        return implode('_', [self::TABLE_PREFIX, $schemaName, $typeName]);
-    }
-
-    /**
      * @param DBALSchema $schema
-     * @param string     $tableName
+     * @param string     $schemaName
      * @param TypeSchema $type
      *
      * @throws DoctrineStorageException
      */
-    private function createTable(DBALSchema $schema, string $tableName, TypeSchema $type)
+    private function createTable(DBALSchema $schema, string $schemaName, TypeSchema $type)
     {
-        $table = $schema->createTable($tableName);
+        $table = $schema->createTable($this->tableName($schemaName, $type->name()));
         $table->addColumn('id', 'guid');
         $table->setPrimaryKey(['id']);
 
         foreach ($type->getDefinitions(['id']) as $field => $definition) {
-            $this->typeRegistry->map($table, $field, $definition);
+            $this->typeRegistry->map($schemaName, $table, $field, $definition);
         }
     }
 

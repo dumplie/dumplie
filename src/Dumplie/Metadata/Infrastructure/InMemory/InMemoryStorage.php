@@ -4,8 +4,8 @@ declare (strict_types = 1);
 
 namespace Dumplie\Metadata\Infrastructure\InMemory;
 
-use Dumplie\Metadata\Schema;
-use Dumplie\Metadata\Storage;
+use Dumplie\Metadata\Application\Schema;
+use Dumplie\Metadata\Application\Storage;
 
 final class InMemoryStorage implements Storage
 {
@@ -131,14 +131,14 @@ final class InMemoryStorage implements Storage
 
     /**
      * @param array $criteria
-     * @param       $metadata
+     * @param array $metadata
      *
      * @return bool
      */
     private function matchesCriteria(array $criteria, array $metadata)
     {
         foreach ($criteria as $key => $value) {
-            if (!array_key_exists($key, $metadata) && $metadata[$key] !== $value) {
+            if (!array_key_exists($key, $metadata) || $metadata[$key] !== $value) {
                 return false;
             }
         }

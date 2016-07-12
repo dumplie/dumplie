@@ -6,12 +6,12 @@ namespace Dumplie\Metadata\Tests\Integration\Infrastructure\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Dumplie\Metadata\Schema;
-use Dumplie\Metadata\Schema\Field\TextField;
-use Dumplie\Metadata\Schema\TypeSchema;
+use Dumplie\Metadata\Application\Schema;
+use Dumplie\Metadata\Application\Schema\Field\AssociationField;
+use Dumplie\Metadata\Application\Schema\Field\TextField;
+use Dumplie\Metadata\Application\Schema\TypeSchema;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\DoctrineStorage;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\DoctrineStorageException;
-use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\Field\TextMapping;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\TypeRegistry;
 use Dumplie\SharedKernel\Tests\Doctrine\DBALHelper;
 use Ramsey\Uuid\Uuid;
@@ -46,28 +46,37 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
             json_decode(DUMPLIE_TEST_DB_CONNECTION, true)
         );
 
-        if ($this->connection->getSchemaManager()->tablesExist(DoctrineStorage::TABLE_PREFIX . '_sample_meta')) {
-            $this->connection->getSchemaManager()->dropTable(DoctrineStorage::TABLE_PREFIX . '_sample_meta');
+        if ($this->connection->getSchemaManager()->tablesExist('metadata_test_bar')) {
+            $this->connection->getSchemaManager()->dropTable('metadata_test_bar');
         }
 
-        $type = new TypeSchema(
-            'meta',
+        if ($this->connection->getSchemaManager()->tablesExist('metadata_test_foo')) {
+            $this->connection->getSchemaManager()->dropTable('metadata_test_foo');
+        }
+
+        $foo = new TypeSchema(
+            'foo',
             [
                 'id' => new TextField(),
                 'text' => new TextField(null, false, ['index' => true])
             ]
         );
 
-        $this->schema = new Schema('sample');
-        $this->schema->add($type);
+        $bar = new TypeSchema(
+            'bar',
+            [
+                'id' => new TextField(),
+                'link' => new AssociationField('test', $foo)
+            ]
+        );
+
+        $this->schema = new Schema('test');
+        $this->schema->add($foo);
+        $this->schema->add($bar);
 
         $this->storage = new DoctrineStorage(
             $this->connection,
-            new TypeRegistry(
-                [
-                    new TextMapping()
-                ]
-            )
+            TypeRegistry::withDefaultTypes()
         );
     }
 
@@ -75,9 +84,7 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
     {
         $this->storage->create($this->schema);
 
-        $result = $this->connection
-            ->getSchemaManager()
-            ->tablesExist(DoctrineStorage::TABLE_PREFIX . '_sample_meta');
+        $result = $this->connection->getSchemaManager()->tablesExist(['metadata_test_foo', 'metadata_test_bar']);
 
         $this->assertTrue($result);
     }
@@ -86,17 +93,14 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
     {
         $this->storage->create($this->schema);
 
-        $result = $this->connection
-            ->getSchemaManager()
-            ->listTableIndexes(DoctrineStorage::TABLE_PREFIX . '_sample_meta');
-
-        $this->assertCount(2, $result);
+        $this->assertCount(2, $this->connection->getSchemaManager()->listTableIndexes('metadata_test_foo'));
+        $this->assertCount(2, $this->connection->getSchemaManager()->listTableIndexes('metadata_test_bar'));
     }
 
     public function test_create_throws_exception_when_trying_to_create_existing_table()
     {
         $this->expectException(DoctrineStorageException::class);
-        $this->expectExceptionMessage('Table "metadata_sample_meta" already exists');
+        $this->expectExceptionMessage('Table "metadata_test_foo" already exists');
 
         $this->storage->create($this->schema);
         $this->storage->create($this->schema);
@@ -104,20 +108,18 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
 
     public function test_alter_existing_table()
     {
-        $foo = new TypeSchema('meta', ['id' => new TextField(), 'foo' => new TextField()]);
-        $fooSchema = new Schema('sample');
+        $foo = new TypeSchema('foo', ['id' => new TextField(), 'foo' => new TextField()]);
+        $fooSchema = new Schema('test');
         $fooSchema->add($foo);
 
-        $bar = new TypeSchema('meta', ['id' => new TextField(), 'bar' => new TextField()]);
-        $barSchema = new Schema('sample');
+        $bar = new TypeSchema('foo', ['id' => new TextField(), 'bar' => new TextField()]);
+        $barSchema = new Schema('test');
         $barSchema->add($bar);
 
         $this->storage->create($fooSchema);
         $this->storage->alter($barSchema);
 
-        $result = $this->connection
-            ->getSchemaManager()
-            ->listTableColumns(DoctrineStorage::TABLE_PREFIX . '_sample_meta');
+        $result = $this->connection->getSchemaManager()->listTableColumns('metadata_test_foo');
 
         $this->assertArrayHasKey('bar', $result);
     }
@@ -126,11 +128,9 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
     {
         $this->storage->alter($this->schema);
 
-        $result = $this->connection
-            ->getSchemaManager()
-            ->listTableColumns(DoctrineStorage::TABLE_PREFIX . '_sample_meta');
+        $result = $this->connection->getSchemaManager()->listTableColumns('metadata_test_foo');
 
-        $this->assertArrayHasKey('text', $result);
+        $this->assertEquals(['id', 'text'], array_keys($result));
     }
 
     public function test_drop()
@@ -138,7 +138,8 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
         $this->storage->create($this->schema);
         $this->storage->drop($this->schema);
 
-        $result = $this->connection->getSchemaManager()->tablesExist(DoctrineStorage::TABLE_PREFIX . '_sample_meta');
+        $result = $this->connection->getSchemaManager()->tablesExist(['metadata_test_foo', 'metadata_test_bar']);
+
         $this->assertFalse($result);
     }
 
@@ -146,16 +147,14 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
     {
         $uuid = (string) Uuid::uuid4();
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', $uuid, ['text' => 'value']);
+        $this->storage->save('test', 'foo', $uuid, ['text' => 'value']);
 
-        $result = $this->storage->findBy('sample', 'meta', ['id' => $uuid]);
+        $result = $this->storage->findBy('test', 'foo', ['id' => $uuid]);
 
         $this->assertEquals(
             [
-                [
-                    'id' => $uuid,
-                    'text' => 'value'
-                ]
+                'id' => $uuid,
+                'text' => 'value'
             ],
             $result
         );
@@ -164,9 +163,9 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
     public function test_find_by_returns_empty_list_when_no_matches_found()
     {
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', (string) Uuid::uuid4(), ['text' => 'value']);
+        $this->storage->save('test', 'foo', (string) Uuid::uuid4(), ['text' => 'value']);
 
-        $result = $this->storage->findBy('sample', 'meta', ['id' => (string) Uuid::uuid4()]);
+        $result = $this->storage->findBy('test', 'foo', ['id' => (string) Uuid::uuid4()]);
 
         $this->assertEmpty($result);
     }
@@ -175,12 +174,12 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
     {
         $uuid = (string) Uuid::uuid4();
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', $uuid, ['text' => 'value']);
+        $this->storage->save('test', 'foo', $uuid, ['text' => 'value']);
 
         $result = $this->connection
             ->createQueryBuilder()
             ->select('*')
-            ->from(DoctrineStorage::TABLE_PREFIX . '_sample_meta')
+            ->from('metadata_test_foo')
             ->where('id = \'' . $uuid . '\'')
             ->execute()
             ->fetch();
@@ -199,13 +198,13 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
         $uuid = (string) Uuid::uuid4();
 
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', $uuid, ['text' => 'old-value']);
-        $this->storage->save('sample', 'meta', $uuid, ['text' => 'new-value']);
+        $this->storage->save('test', 'foo', $uuid, ['text' => 'old-value']);
+        $this->storage->save('test', 'foo', $uuid, ['text' => 'new-value']);
 
         $result = $this->connection
             ->createQueryBuilder()
             ->select('*')
-            ->from(DoctrineStorage::TABLE_PREFIX . '_sample_meta')
+            ->from('metadata_test_foo')
             ->where('id = :id')
             ->setParameter('id', $uuid)
             ->execute()
@@ -224,9 +223,9 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
     {
         $uuid = (string) Uuid::uuid4();
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', $uuid, ['text' => 'value']);
+        $this->storage->save('test', 'foo', $uuid, ['text' => 'value']);
 
-        $result = $this->storage->has('sample', 'meta', $uuid);
+        $result = $this->storage->has('test', 'foo', $uuid);
 
         $this->assertTrue($result);
     }
@@ -235,11 +234,11 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
     {
         $uuid = (string) Uuid::uuid4();
         $this->storage->create($this->schema);
-        $this->storage->save('sample', 'meta', $uuid, ['text' => 'value']);
+        $this->storage->save('test', 'foo', $uuid, ['text' => 'value']);
 
-        $this->storage->delete('sample', 'meta', $uuid);
+        $this->storage->delete('test', 'foo', $uuid);
 
-        $result = $this->storage->has('sample', 'meta', $uuid);
+        $result = $this->storage->has('test', 'foo', $uuid);
 
         $this->assertTrue($result);
     }

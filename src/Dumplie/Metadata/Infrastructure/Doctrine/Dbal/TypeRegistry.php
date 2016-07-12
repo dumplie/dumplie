@@ -5,7 +5,8 @@ declare (strict_types = 1);
 namespace Dumplie\Metadata\Infrastructure\Doctrine\Dbal;
 
 use Doctrine\DBAL\Schema\Table;
-use Dumplie\Metadata\Schema\FieldDefinition;
+use Dumplie\Metadata\Application\Schema\FieldDefinition;
+use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\Field\AssociationMapping;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\Field\TextMapping;
 
 final class TypeRegistry
@@ -33,6 +34,7 @@ final class TypeRegistry
     public static function withDefaultTypes(): TypeRegistry
     {
         $registry = new static();
+        $registry->register(new AssociationMapping());
         $registry->register(new TextMapping());
 
         return $registry;
@@ -47,17 +49,18 @@ final class TypeRegistry
     }
 
     /**
+     * @param string          $schema
      * @param Table           $table
      * @param string          $name
      * @param FieldDefinition $definition
      *
      * @throws DoctrineStorageException
      */
-    public function map(Table $table, string $name, FieldDefinition $definition)
+    public function map(string $schema, Table $table, string $name, FieldDefinition $definition)
     {
         foreach ($this->mapping as $mapping) {
             if ($mapping->maps($definition->type())) {
-                $mapping->map($table, $name, $definition);
+                $mapping->map($schema, $table, $name, $definition);
                 return;
             }
         }

@@ -5,12 +5,17 @@ declare (strict_types = 1);
 namespace Dumplie\Metadata\Infrastructure\Doctrine\Dbal\Field;
 
 use Doctrine\DBAL\Schema\Table;
+use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\DoctrineStorageException;
+use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\TableName;
+use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\TypeMapping;
+use Dumplie\Metadata\Application\Schema\AssociationFieldDefinition;
 use Dumplie\Metadata\Application\Schema\FieldDefinition;
 use Dumplie\Metadata\Application\Schema\Type;
-use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\TypeMapping;
 
-class TextMapping implements TypeMapping
+class AssociationMapping implements TypeMapping
 {
+    use TableName;
+
     /**
      * @var Type
      */
@@ -21,7 +26,7 @@ class TextMapping implements TypeMapping
      */
     public function __construct()
     {
-        $this->type = new Type(Type::TYPE_TEXT);
+        $this->type = Type::association();
     }
 
     /**
@@ -39,12 +44,18 @@ class TextMapping implements TypeMapping
      * @param Table           $table
      * @param string          $name
      * @param FieldDefinition $definition
+     *
+     * @throws DoctrineStorageException
      */
     public function map(string $schema, Table $table, string $name, FieldDefinition $definition)
     {
+        if (!$definition instanceof AssociationFieldDefinition) {
+            throw DoctrineStorageException::invalidDefinition(AssociationFieldDefinition::class, $definition);
+        }
+
         $table->addColumn(
             $name,
-            'string',
+            'guid',
             [
                 'notnull' => !$definition->isNullable(),
                 'default' => $definition->defaultValue(),
@@ -53,10 +64,10 @@ class TextMapping implements TypeMapping
             ]
         );
 
-        if ($definition->options()['index'] ?? false) {
-            $table->addIndex([$name]);
-        }
-
-        return true;
+        $table->addForeignKeyConstraint(
+            $this->tableName($schema, $definition->typeSchema()->name()),
+            [$name],
+            ['id']
+        );
     }
 }

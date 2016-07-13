@@ -6,9 +6,9 @@ namespace Dumplie\Metadata\Infrastructure\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema as DBALSchema;
-use Dumplie\Metadata\Application\Schema;
-use Dumplie\Metadata\Application\Schema\TypeSchema;
-use Dumplie\Metadata\Application\Storage;
+use Dumplie\Metadata\Schema;
+use Dumplie\Metadata\Schema\TypeSchema;
+use Dumplie\Metadata\Storage;
 
 class DoctrineStorage implements Storage
 {
@@ -176,10 +176,12 @@ class DoctrineStorage implements Storage
      */
     public function delete(string $schema, string $typeName, string $id)
     {
-        $this->connection->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->delete($this->tableName($schema, $typeName))
             ->where('id = :id')
             ->setParameter('id', $id);
+
+        $this->connection->executeQuery($query->getSQL(), $query->getParameters());
     }
 
     /**

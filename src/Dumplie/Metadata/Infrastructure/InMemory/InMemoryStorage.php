@@ -4,8 +4,8 @@ declare (strict_types = 1);
 
 namespace Dumplie\Metadata\Infrastructure\InMemory;
 
-use Dumplie\Metadata\Application\Schema;
-use Dumplie\Metadata\Application\Storage;
+use Dumplie\Metadata\Schema;
+use Dumplie\Metadata\Storage;
 
 final class InMemoryStorage implements Storage
 {

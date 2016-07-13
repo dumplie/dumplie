@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Table;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\DoctrineStorageException;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\TableName;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\TypeMapping;
-use Dumplie\Metadata\Application\Schema\AssociationFieldDefinition;
-use Dumplie\Metadata\Application\Schema\FieldDefinition;
-use Dumplie\Metadata\Application\Schema\Type;
+use Dumplie\Metadata\Schema\AssociationFieldDefinition;
+use Dumplie\Metadata\Schema\FieldDefinition;
+use Dumplie\Metadata\Schema\Type;
 
 class AssociationMapping implements TypeMapping
 {

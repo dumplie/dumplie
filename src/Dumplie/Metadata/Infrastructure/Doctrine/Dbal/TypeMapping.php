@@ -5,8 +5,8 @@ declare (strict_types = 1);
 namespace Dumplie\Metadata\Infrastructure\Doctrine\Dbal;
 
 use Doctrine\DBAL\Schema\Table;
-use Dumplie\Metadata\Application\Schema\FieldDefinition;
-use Dumplie\Metadata\Application\Schema\Type;
+use Dumplie\Metadata\Schema\FieldDefinition;
+use Dumplie\Metadata\Schema\Type;
 
 interface TypeMapping
 {

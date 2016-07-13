@@ -6,10 +6,10 @@ namespace Dumplie\Metadata\Tests\Integration\Infrastructure\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Dumplie\Metadata\Application\Schema;
-use Dumplie\Metadata\Application\Schema\Field\AssociationField;
-use Dumplie\Metadata\Application\Schema\Field\TextField;
-use Dumplie\Metadata\Application\Schema\TypeSchema;
+use Dumplie\Metadata\Schema;
+use Dumplie\Metadata\Schema\Field\AssociationField;
+use Dumplie\Metadata\Schema\Field\TextField;
+use Dumplie\Metadata\Schema\TypeSchema;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\DoctrineStorage;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\DoctrineStorageException;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\TypeRegistry;
@@ -238,8 +238,6 @@ class DoctrineStorageTest extends \PHPUnit_Framework_TestCase
 
         $this->storage->delete('test', 'foo', $uuid);
 
-        $result = $this->storage->has('test', 'foo', $uuid);
-
-        $this->assertTrue($result);
+        $this->assertFalse($this->storage->has('test', 'foo', $uuid));
     }
 }

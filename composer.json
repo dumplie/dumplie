@@ -17,7 +17,11 @@
         "phpspec/prophecy": "^1.6",
 
         "doctrine/orm": "^2.5",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+
+        "symfony/dependency-injection": "^3.1",
+        "symfony/config": "^3.1",
+        "symfony/http-kernel": "^3.1"
     },
     "suggest": {
         "doctrine/orm": "Allows usage of Doctrine ORM as a storage for application",
@@ -28,6 +32,8 @@
             "": "src/"
         }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload-dev": {
         "psr-4": {
             "": "tests/"

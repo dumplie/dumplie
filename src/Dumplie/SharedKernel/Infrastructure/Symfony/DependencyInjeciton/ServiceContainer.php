@@ -6,14 +6,13 @@ namespace Dumplie\SharedKernel\Infrastructure\Symfony\DependencyInjeciton;
 
 use Dumplie\SharedKernel\Application\ServiceContainer as BaseContainer;
 use Dumplie\SharedKernel\Application\ServiceContainer\Definition;
+use Dumplie\SharedKernel\Application\Services;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition as SymfonyDefinition;
 use Symfony\Component\DependencyInjection\Reference;
 
 final class ServiceContainer implements BaseContainer
 {
-    const SERVICE_LOCATOR_ID = 'dumplie.service.locator';
-
     /**
      * @var ContainerBuilder
      */
@@ -25,7 +24,7 @@ final class ServiceContainer implements BaseContainer
     public function __construct(ContainerBuilder $builder)
     {
         $this->builder = $builder;
-        $this->builder->setAlias(self::SERVICE_LOCATOR_ID, 'service_container');
+        $this->builder->setAlias(Services::KERNEL_SERVICE_LOCATOR, 'service_container');
     }
 
     /**

@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Dumplie\Inventory\Infrastructure\Doctrine\ORM;
 
+use Dumplie\Inventory\Application\Services;
 use Dumplie\Inventory\Infrastructure\Doctrine\ORM\Domain\ORMProducts;
 use Dumplie\SharedKernel\Application\Exception\ServiceContainer\ServiceNotFoundException;
 use Dumplie\SharedKernel\Application\ServiceContainer\ArgumentService;
@@ -13,8 +14,6 @@ use Dumplie\SharedKernel\Infrastructure\Symfony\DependencyInjeciton\ServiceConta
 
 final class ORMExtension
 {
-    const INVENTORY_PRODUCTS_SERVICE_ID = 'dumplie.inventory.products';
-
     /**
      * @var string
      */
@@ -35,7 +34,7 @@ final class ORMExtension
     public function configure(ServiceContainer $serviceContainer)
     {
         $serviceContainer->register(
-            self::INVENTORY_PRODUCTS_SERVICE_ID,
+            Services::INVENTORY_DOMAIN_PRODUCTS,
             new Definition(
                 ORMProducts::class,
                 [

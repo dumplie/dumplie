@@ -7,6 +7,12 @@ namespace Dumplie\Inventory\Application\Query;
 interface InventoryQuery
 {
     /**
+     * @param string $sku
+     * @return bool
+     */
+    public function skuExists(string $sku) : bool;
+
+    /**
      * @param int $limit
      * @param int $offset
      * @return array

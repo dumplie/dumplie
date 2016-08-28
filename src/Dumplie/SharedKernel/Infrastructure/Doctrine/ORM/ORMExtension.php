@@ -8,6 +8,7 @@ use Dumplie\SharedKernel\Application\Exception\ServiceContainer\ServiceNotFoundE
 use Dumplie\SharedKernel\Application\Extension;
 use Dumplie\SharedKernel\Application\ServiceContainer;
 use Dumplie\SharedKernel\Application\ServiceLocator;
+use Dumplie\SharedKernel\Application\Services;
 use Dumplie\SharedKernel\Infrastructure\Doctrine\ORM\Application\Transaction\ORMFactory;
 
 final class ORMExtension implements Extension
@@ -32,7 +33,7 @@ final class ORMExtension implements Extension
     public function configure(ServiceContainer $serviceContainer)
     {
         $serviceContainer->register(
-            Extension\CoreExtension::TRANSACTION_FACTORY_SERVICE_ID,
+            Services::KERNEL_TRANSACTION_FACTORY,
             new ServiceContainer\Definition(
                 ORMFactory::class,
                 [

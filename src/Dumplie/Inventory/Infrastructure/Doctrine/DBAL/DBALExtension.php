@@ -4,6 +4,7 @@ declare (strict_types = 1);
 
 namespace Dumplie\Inventory\Infrastructure\Doctrine\DBAL;
 
+use Dumplie\Inventory\Application\Services;
 use Dumplie\Inventory\Infrastructure\Doctrine\DBAL\Query\DbalInventoryQuery;
 use Dumplie\SharedKernel\Application\Exception\ServiceContainer\ServiceNotFoundException;
 use Dumplie\SharedKernel\Application\Extension;
@@ -12,8 +13,6 @@ use Dumplie\SharedKernel\Application\ServiceLocator;
 
 final class DBALExtension implements Extension
 {
-    const INVENTORY_QUERY_SERVICE_ID = 'dumplie.inventory.query';
-
     /**
      * @var string
      */
@@ -34,7 +33,7 @@ final class DBALExtension implements Extension
     public function configure(ServiceContainer $serviceContainer)
     {
         $serviceContainer->register(
-            self::INVENTORY_QUERY_SERVICE_ID,
+            Services::INVENTORY_APPLICATION_QUERY,
             new ServiceContainer\Definition(DbalInventoryQuery::class, [
                 new ServiceContainer\ArgumentService($this->connectionServiceId)
             ])

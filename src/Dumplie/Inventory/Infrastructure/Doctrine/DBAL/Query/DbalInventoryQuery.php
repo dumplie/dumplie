@@ -23,6 +23,26 @@ final class DbalInventoryQuery implements InventoryQuery
         $this->connection = $connection;
     }
 
+    /**
+     * @param string $sku
+     * @return bool
+     */
+    public function skuExists(string $sku) : bool
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('COUNT(*)')
+            ->from('dumplie_inventory_product')
+            ->where('sku = :sku')
+            ->setParameter('sku', $sku);
+
+        return (bool) $this->connection->fetchColumn($qb->getSQL(), $qb->getParameters());
+    }
+
+    /**
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
     public function findAll(int $limit, int $offset = 0) : array
     {
         $qb = $this->connection->createQueryBuilder();
@@ -34,10 +54,13 @@ final class DbalInventoryQuery implements InventoryQuery
         $results = $this->connection->fetchAll($qb->getSQL(), $qb->getParameters());
 
         return array_map(function ($data) {
-            return new Product('sku', 124.50, 'PLN', true);
+            return new Product($data['sku'], $data['price_amount'] / $data['price_precision'], $data['price_currency'], (bool) $data['is_in_stock']);
         }, $results);
     }
 
+    /**
+     * @return int
+     */
     public function count() : int
     {
         $qb = $this->connection->createQueryBuilder();

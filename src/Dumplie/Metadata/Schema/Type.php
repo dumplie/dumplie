@@ -10,10 +10,12 @@ final class Type
 {
     const TYPE_ASSOCIATION = 'association';
     const TYPE_TEXT = 'text';
+    const TYPE_BOOL = 'bool';
 
     private $allowed = [
         self::TYPE_ASSOCIATION,
-        self::TYPE_TEXT
+        self::TYPE_TEXT,
+        self::TYPE_BOOL
     ];
 
     private $type;
@@ -27,7 +29,7 @@ final class Type
      */
     public function __construct(string $type)
     {
-        if (!in_array($type, $this->allowed)) {
+        if (!in_array($type, $this->allowed, true)) {
             throw InvalidTypeException::invalidType($type, $this->allowed);
         }
 
@@ -48,6 +50,14 @@ final class Type
     public static function text(): Type
     {
         return new static(static::TYPE_TEXT);
+    }
+
+    /**
+     * @return Type
+     */
+    public static function bool(): Type
+    {
+        return new static(static::TYPE_BOOL);
     }
 
     /**

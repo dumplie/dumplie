@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Dumplie\Metadata\Tests\Integration\Generic;
 
 use Dumplie\Metadata\Schema\Field\AssociationField;
+use Dumplie\Metadata\Schema\Field\BoolField;
 use Dumplie\Metadata\Schema\Field\TextField;
 use Dumplie\Metadata\Hydrator\DefaultHydrator;
 use Dumplie\Metadata\Metadata;

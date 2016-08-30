@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Dumplie\Metadata\Infrastructure\Doctrine\Dbal;
 
 use Doctrine\DBAL\Schema\Table;
+use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\Field\BoolMapping;
 use Dumplie\Metadata\Schema\FieldDefinition;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\Field\AssociationMapping;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\Field\TextMapping;
@@ -36,6 +37,7 @@ final class TypeRegistry
         $registry = new static();
         $registry->register(new AssociationMapping());
         $registry->register(new TextMapping());
+        $registry->register(new BoolMapping());
 
         return $registry;
     }

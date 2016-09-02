@@ -9,10 +9,19 @@ use Dumplie\Metadata\Schema\TypeSchema;
 
 final class Schema
 {
+    /**
+     * @var string
+     */
     private $name;
 
+    /**
+     * @var TypeSchema[]
+     */
     private $types;
 
+    /**
+     * @param string $name
+     */
     public function __construct(string $name)
     {
         $this->name = $name;

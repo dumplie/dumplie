@@ -5,7 +5,7 @@ declare (strict_types = 1);
 namespace Dumplie\CustomerService\Tests\Doctrine;
 
 use Doctrine\ORM\EntityManager;
-use Dumplie\SharedKernel\Application\Command\Extension\Core\TransactionExtension;
+use Dumplie\SharedKernel\Application\Extension\Command\TransactionExtension;
 use Dumplie\SharedKernel\Application\EventLog;
 use Dumplie\CustomerService\Domain\Order\NewOrderListener;
 use Dumplie\Customer\Domain\Event\CustomerPlacedOrder;

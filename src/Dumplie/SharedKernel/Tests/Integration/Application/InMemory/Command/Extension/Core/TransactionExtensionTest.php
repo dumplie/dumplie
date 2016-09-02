@@ -6,7 +6,7 @@ use Dumplie\Customer\Application\Command\AddToCart;
 use Dumplie\Customer\Application\Command\AddToCartHandler;
 use Dumplie\Customer\Application\Command\CreateCart;
 use Dumplie\Customer\Application\Command\CreateCartHandler;
-use Dumplie\SharedKernel\Application\Command\Extension\Core\TransactionExtension;
+use Dumplie\SharedKernel\Application\Extension\Command\TransactionExtension;
 use Dumplie\SharedKernel\Application\Command\ExtensionRegistry;
 use Dumplie\SharedKernel\Application\ServiceLocator;
 use Dumplie\SharedKernel\Application\Transaction\Transaction;

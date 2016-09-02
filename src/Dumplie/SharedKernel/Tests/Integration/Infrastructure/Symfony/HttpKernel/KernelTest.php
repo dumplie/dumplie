@@ -12,32 +12,27 @@ use Prophecy\Argument;
 
 final class KernelTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var KernelStub
-     */
-    private $kernel;
-
-    public function setUp()
-    {
-        $this->kernel = new KernelStub();
-    }
-
     public function test_if_container_is_instance_of_service_locator()
     {
-        $this->kernel->boot();
+        $kernel = new KernelStub();
 
-        $this->assertInstanceOf(ServiceLocator::class, $this->kernel->getContainer());
+        $kernel->boot();
+
+        $this->assertInstanceOf(ServiceLocator::class, $kernel->getContainer());
     }
 
     public function test_exntesion_endpoints_execution()
     {
         $extensionProphecy = $this->prophesize(Extension::class);
 
-        $extensionProphecy->configure(Argument::type(ServiceContainer::class))->shouldBeCalled();
+        $extensionProphecy->dependsOn()->willReturn([]);
+        $extensionProphecy->build(Argument::type(ServiceContainer::class))->shouldBeCalled();
         $extensionProphecy->boot(Argument::type(ServiceLocator::class))->shouldBeCalled();
 
-        $this->kernel->setExtensions([$extensionProphecy->reveal()]);
+        $kernel = new KernelStub([$extensionProphecy->reveal()]);
 
-        $this->kernel->boot();
+        $kernel->setExtensions();
+
+        $kernel->boot();
     }
 }

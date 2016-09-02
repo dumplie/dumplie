@@ -18,8 +18,8 @@ final class KernelStub extends \Dumplie\SharedKernel\Infrastructure\Symfony\Http
      */
     public function __construct(array $extension = [])
     {
-        parent::__construct('test', false);
         $this->extensions = $extension;
+        parent::__construct('test', false);
     }
 
     /**

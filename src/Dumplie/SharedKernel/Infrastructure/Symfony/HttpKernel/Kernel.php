@@ -8,9 +8,25 @@ use Dumplie\SharedKernel\Infrastructure\Symfony\DependencyInjeciton\ServiceConta
 use Dumplie\SharedKernel\Infrastructure\Symfony\DependencyInjeciton\ServiceLocator;
 use ReflectionClass;
 use Symfony\Component\HttpKernel\Kernel as HttpKernel;
+use Dumplie\SharedKernel\Application\Kernel as DumplieKernel;
 
 abstract class Kernel extends HttpKernel
 {
+    /**
+     * @var DumplieKernel
+     */
+    private $dumplieKernel;
+
+    public function __construct($environment, $debug)
+    {
+        parent::__construct($environment, $debug);
+        $this->dumplieKernel = new DumplieKernel();
+
+        foreach ($this->registerDumplieExtensions() as $extension) {
+            $this->dumplieKernel->register($extension);
+        }
+    }
+
     /**
      * Returns and array of extensions to register.
      *
@@ -24,9 +40,7 @@ abstract class Kernel extends HttpKernel
 
         $serviceContainer = new ServiceContainer($builder);
 
-        foreach ($this->registerDumplieExtensions() as $extension) {
-            $extension->configure($serviceContainer);
-        }
+        $this->dumplieKernel->build($serviceContainer);
 
         return $builder;
     }
@@ -52,9 +66,7 @@ abstract class Kernel extends HttpKernel
             $bundle->boot();
         }
 
-        foreach ($this->registerDumplieExtensions() as $extension) {
-            $extension->boot($this->container);
-        }
+        $this->dumplieKernel->boot($this->container);
 
         $this->booted = true;
     }

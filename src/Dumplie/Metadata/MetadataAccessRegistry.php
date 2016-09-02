@@ -5,19 +5,20 @@ declare (strict_types = 1);
 namespace Dumplie\Metadata;
 
 use Dumplie\Metadata\Exception\NotFoundException;
+use Dumplie\Metadata\Schema\Builder;
 
 final class MetadataAccessRegistry
 {
     /**
-     * @var Schema
+     * @var Builder
      */
-    private $schema;
+    private $schemaBuilder;
 
     /**
      * @var Storage
      */
     private $storage;
-    
+
     /**
      * @var Hydrator
      */
@@ -25,12 +26,12 @@ final class MetadataAccessRegistry
 
     /**
      * @param Storage $storage
-     * @param Schema $schema
+     * @param Builder $schemaBuilder
      * @param Hydrator $hydrator
      */
-    public function __construct(Storage $storage, Schema $schema, Hydrator $hydrator)
+    public function __construct(Storage $storage, Builder $schemaBuilder, Hydrator $hydrator)
     {
-        $this->schema = $schema;
+        $this->schemaBuilder = $schemaBuilder;
         $this->storage = $storage;
         $this->hydrator = $hydrator;
     }
@@ -42,10 +43,12 @@ final class MetadataAccessRegistry
      */
     public function getMAO(string $typeName) : MetadataAccessObject
     {
+        $schema = $this->schemaBuilder->build();
+
         return new MetadataAccessObject(
             $this->storage,
-            $this->schema->name(),
-            $this->schema->get($typeName),
+            $schema->name(),
+            $schema->get($typeName),
             $this->hydrator
         );
     }

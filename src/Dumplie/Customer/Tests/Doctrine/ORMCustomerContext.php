@@ -6,7 +6,7 @@ namespace Dumplie\Customer\Tests\Doctrine;
 
 use Doctrine\ORM\EntityManager;
 use Dumplie\Customer\Tests\AbstractCustomerContext;
-use Dumplie\SharedKernel\Application\Command\Extension\Core\TransactionExtension;
+use Dumplie\SharedKernel\Application\Extension\Command\TransactionExtension;
 use Dumplie\SharedKernel\Application\EventLog;
 use Dumplie\Customer\Infrastructure\Doctrine\Dbal\Domain\DbalProducts;
 use Dumplie\SharedKernel\Infrastructure\Doctrine\ORM\Application\Transaction\ORMFactory;

@@ -6,7 +6,10 @@ namespace Dumplie\Metadata\Infrastructure\Doctrine\Dbal;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Schema as DBALSchema;
+use Dumplie\Metadata\ChangeSet\AddField;
+use Dumplie\Metadata\ChangeSet\AddType;
 use Dumplie\Metadata\Schema;
+use Dumplie\Metadata\Schema\ChangeSet;
 use Dumplie\Metadata\Schema\TypeSchema;
 use Dumplie\Metadata\Storage;
 
@@ -85,6 +88,7 @@ class DoctrineStorage implements Storage
         }
 
         $queries = $currentSchema->getMigrateToSql($targetSchema, $this->connection->getDatabasePlatform());
+
         $this->executeQueries($queries);
     }
 
@@ -102,6 +106,30 @@ class DoctrineStorage implements Storage
 
         $queries = $currentSchema->getMigrateToSql($targetSchema, $this->connection->getDatabasePlatform());
         $this->executeQueries($queries);
+    }
+
+    /**
+     * @param Schema $schema
+     * @return ChangeSet
+     */
+    public function diff(Schema $schema) : ChangeSet
+    {
+        $currentSchema = $this->connection->getSchemaManager()->createSchema();
+        $targetSchema = clone $currentSchema;
+
+        foreach ($schema->types() as $type) {
+            $tableName = $this->tableName($schema->name(), $type->name());
+
+            if ($targetSchema->hasTable($tableName)) {
+                $targetSchema->dropTable($tableName);
+            }
+
+            $this->createTable($targetSchema, $schema->name(), $type);
+        }
+
+        $queries = $currentSchema->getMigrateToSql($targetSchema, $this->connection->getDatabasePlatform());
+
+        return new ChangeSet($queries);
     }
 
     /**

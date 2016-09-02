@@ -1,6 +1,6 @@
 <?php
 
-namespace Spec\Dumplie\SharedKernel\Application\Command\Extension\Core;
+namespace Spec\Dumplie\SharedKernel\Application\Extension\Command;
 
 use Dumplie\Customer\Application\Command\CreateCart;
 use Dumplie\SharedKernel\Application\Command\Extension;

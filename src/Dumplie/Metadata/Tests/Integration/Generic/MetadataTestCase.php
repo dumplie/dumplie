@@ -28,9 +28,9 @@ abstract class MetadataTestCase extends \PHPUnit_Framework_TestCase
     protected $registry;
 
     /**
-     * @var Schema
+     * @var Schema\Builder
      */
-    private $schema;
+    private $schemaBuilder;
 
     /**
      * @return Storage
@@ -43,29 +43,28 @@ abstract class MetadataTestCase extends \PHPUnit_Framework_TestCase
 
         $hydrator = new DefaultHydrator($this->storage);
 
-        $this->schema = new Schema("inventory");
+        $this->schemaBuilder = new Schema\Builder("inventory");
 
         $categorySchema = new Schema\TypeSchema("category", [
             "name" => new TextField(),
         ]);
-        $this->schema->add($categorySchema);
+        $this->schemaBuilder->addType($categorySchema);
 
-        $productSchema = new Schema\TypeSchema("product", [
+        $this->schemaBuilder->addType(new Schema\TypeSchema("product", [
             "sku" => new TextField(),
             "name" => new TextField(),
             "brand" => new TextField("Dumplie"),
             "category" => new AssociationField('inventory', $categorySchema, true)
-        ]);
-        $this->schema->add($productSchema);
+        ]));
 
-        $this->registry = new MetadataAccessRegistry($this->storage, $this->schema, $hydrator);
+        $this->registry = new MetadataAccessRegistry($this->storage, $this->schemaBuilder, $hydrator);
 
-        $this->storage->alter($this->schema);
+        $this->storage->alter($this->schemaBuilder->build());
     }
 
     public function tearDown()
     {
-        $this->storage->drop($this->schema);
+        $this->storage->drop($this->schemaBuilder->build());
     }
 
     public function test_getting_not_existing_moa()

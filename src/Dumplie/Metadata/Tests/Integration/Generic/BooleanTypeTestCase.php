@@ -25,9 +25,9 @@ abstract class BooleanTypeTestCase extends \PHPUnit_Framework_TestCase
     protected $registry;
 
     /**
-     * @var Schema
+     * @var Schema\Builder
      */
-    private $schema;
+    private $schemaBuilder;
 
     /**
      * @return Storage
@@ -40,17 +40,17 @@ abstract class BooleanTypeTestCase extends \PHPUnit_Framework_TestCase
 
         $hydrator = new DefaultHydrator($this->storage);
 
-        $this->schema = new Schema("boolean");
+        $this->schemaBuilder = new Schema\Builder("boolean");
 
         $productSchema = new Schema\TypeSchema("test", [
             "without_default" => new BoolField(),
             "with_default" => new BoolField(false)
         ]);
-        $this->schema->add($productSchema);
+        $this->schemaBuilder->addType($productSchema);
 
-        $this->registry = new MetadataAccessRegistry($this->storage, $this->schema, $hydrator);
+        $this->registry = new MetadataAccessRegistry($this->storage, $this->schemaBuilder, $hydrator);
 
-        $this->storage->alter($this->schema);
+        $this->storage->alter($this->schemaBuilder->build());
     }
 
     public function test_reading_metadata()
@@ -87,6 +87,6 @@ abstract class BooleanTypeTestCase extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        $this->storage->drop($this->schema);
+        $this->storage->drop($this->schemaBuilder->build());
     }
 }

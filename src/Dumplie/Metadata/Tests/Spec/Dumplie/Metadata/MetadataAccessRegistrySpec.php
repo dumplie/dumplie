@@ -15,9 +15,10 @@ class MetadataAccessRegistrySpec extends ObjectBehavior
 {
     function let(Storage $storage, Hydrator $hydrator)
     {
-        $schema = new Schema('schema');
-        $schema->add(new TypeSchema("product", ["sku" => new TextField()]));
-        $this->beConstructedWith($storage, $schema, $hydrator);
+        $builder = new Schema\Builder('schema');
+        $builder->addType(new TypeSchema("product", ["sku" => new TextField()]));
+
+        $this->beConstructedWith($storage, $builder, $hydrator);
     }
 
     function it_returns_MAO_for_existing_type_schema()

@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Dumplie\Metadata;
 
+use Dumplie\Metadata\Schema\ChangeSet;
+
 interface Storage
 {
     /**
@@ -20,6 +22,12 @@ interface Storage
      * @param Schema $schema
      */
     public function drop(Schema $schema);
+
+    /**
+     * @param Schema $schema
+     * @return ChangeSet
+     */
+    public function diff(Schema $schema) : ChangeSet;
 
     /**
      * Needs to return metadata in following format:

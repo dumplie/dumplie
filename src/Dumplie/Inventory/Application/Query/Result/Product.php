@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Dumplie\Inventory\Application\Query\Result;
 
+use Dumplie\Metadata\Metadata;
+
 final class Product
 {
     /**
@@ -27,17 +29,24 @@ final class Product
     private $isAvailable;
 
     /**
+     * @var Metadata
+     */
+    private $metadata;
+
+    /**
      * @param string $sku
      * @param float $price
      * @param string $currency
      * @param bool $isAvailable
+     * @param Metadata $metadata
      */
-    public function __construct(string $sku, float $price, string $currency, bool $isAvailable)
+    public function __construct(string $sku, float $price, string $currency, bool $isAvailable, Metadata $metadata)
     {
         $this->sku = $sku;
         $this->price = $price;
         $this->currency = $currency;
         $this->isAvailable = $isAvailable;
+        $this->metadata = $metadata;
     }
 
     /**
@@ -70,5 +79,13 @@ final class Product
     public function isAvailable() : bool
     {
         return $this->isAvailable;
+    }
+
+    /**
+     * @return Metadata
+     */
+    public function metadata()
+    {
+        return $this->metadata;
     }
 }

@@ -2,41 +2,26 @@
 
 declare (strict_types = 1);
 
-namespace Dumplie\SharedKernel\Application\Command\Extension\Core;
+namespace Dumplie\Inventory\Application\Extension\Command;
 
+use Dumplie\Inventory\Application\Command\CreateProduct;
+use Dumplie\Inventory\Application\Extension\Metadata as InventoryMetadata;
+use Dumplie\Metadata\Metadata;
+use Dumplie\Metadata\MetadataId;
 use Dumplie\SharedKernel\Application\Command\Command;
 use Dumplie\SharedKernel\Application\Command\Extension;
 use Dumplie\SharedKernel\Application\ServiceLocator;
-use Dumplie\SharedKernel\Application\Transaction\Factory;
-use Dumplie\SharedKernel\Application\Transaction\Transaction;
+use Dumplie\SharedKernel\Application\Services;
 
-final class TransactionExtension implements Extension
+final class MetadataExtension implements Extension
 {
-    /**
-     * @var Factory
-     */
-    private $factory;
-
-    /**
-     * @var Transaction|null
-     */
-    private $transaction;
-
-    /**
-     * @param Factory $factory
-     */
-    public function __construct(Factory $factory)
-    {
-        $this->factory = $factory;
-    }
-
     /**
      * @param Command $command
      * @return bool
      */
     public function expands(Command $command) : bool
     {
-        return true;
+        return $command instanceof CreateProduct;
     }
 
     /**
@@ -45,7 +30,6 @@ final class TransactionExtension implements Extension
      */
     public function pre(Command $command, ServiceLocator $serviceLocator)
     {
-        $this->transaction = $this->factory->open();
     }
 
     /**
@@ -54,19 +38,21 @@ final class TransactionExtension implements Extension
      */
     public function post(Command $command, ServiceLocator $serviceLocator)
     {
-        $this->transaction->commit();
+        /* @var CreateProduct $command */
+        $serviceLocator->get(Services::KERNEL_METADATA_ACCESS_REGISTRY)->getMAO(InventoryMetadata::TYPE_NAME)->save(
+            new Metadata(MetadataId::generate(), InventoryMetadata::TYPE_NAME, [
+                InventoryMetadata::FIELD_SKU => $command->sku(),
+                InventoryMetadata::FIELD_VISIBLE => false,
+            ])
+        );
     }
 
     /**
      * @param Command $command
      * @param \Exception $e
      * @param ServiceLocator $serviceLocator
-     * @throws \Exception
      */
     public function catchException(Command $command, \Exception $e, ServiceLocator $serviceLocator)
     {
-        $this->transaction->rollback();
-
-        throw $e;
     }
 }

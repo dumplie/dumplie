@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Dumplie\Metadata\Infrastructure\InMemory;
 
 use Dumplie\Metadata\Schema;
+use Dumplie\Metadata\Schema\ChangeSet;
 use Dumplie\Metadata\Storage;
 
 final class InMemoryStorage implements Storage
@@ -29,6 +30,13 @@ final class InMemoryStorage implements Storage
     public function drop(Schema $schema)
     {
         $this->storage = [];
+    }
+
+    public function diff(Schema $schema) : ChangeSet
+    {
+        // in memory schema is always up to date
+
+        return new ChangeSet();
     }
 
     /**

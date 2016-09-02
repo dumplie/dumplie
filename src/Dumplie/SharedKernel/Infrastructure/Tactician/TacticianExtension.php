@@ -23,7 +23,20 @@ final class TacticianExtension implements Extension
     const TACTICAIN_MIDDLEWARE_HANDLER = 'dumplie.tactician.middleware.handler';
     const TACTICAIN_MIDDLEWARE_EXTENSION = 'dumplie.tactician.middleware.extension';
 
-    public function configure(ServiceContainer $serviceContainer)
+    /**
+     * @return array
+     */
+    public function dependsOn() : array
+    {
+        return [
+            Extension\CoreExtension::class
+        ];
+    }
+
+    /**
+     * @param ServiceContainer $serviceContainer
+     */
+    public function build(ServiceContainer $serviceContainer)
     {
         $serviceContainer->register(
             self::TACTICAIN_HANDLER_LOCATOR,

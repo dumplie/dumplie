@@ -8,6 +8,9 @@ final class Services
 {
     const KERNEL_SERVICE_LOCATOR = 'dumplie.shared_kernel.service.locator';
 
+    const KERNEL_RENDERING_ENGINE = 'dumplie.shared_kernel.rendering.engine';
+    const KERNEL_RENDERING_CONTEXT_MAP = 'dumplie.shared_kernel.rendering.context_map';
+
     const KERNEL_COMMAND_BUS = 'dumplie.shared_kernel.command.bus';
     const KERNEL_COMMAND_HANDLER_MAP = 'dumplie.shared_kernel.command.handler_map';
     const KERNEL_COMMAND_EXTENSION_REGISTRY = 'dumplie.shared_kernel.command.extension_registry';

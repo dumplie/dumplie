@@ -1,0 +1,32 @@
+<table class="{% block classes %}{% endblock %}">
+    {% block header %}
+    <thead>
+    <tr>
+        <th>
+            {{ 'inventory.storage.list.header.sku'|trans }}
+        </th>
+        <th>
+            {{ 'inventory.storage.list.header.price'|trans }}
+        </th>
+        <th>
+            {{ 'inventory.storage.list.header.available'|trans }}
+        </th>
+        <th>
+            {{ 'inventory.storage.list.header.visible'|trans }}
+        </th>
+    </tr>
+    </thead>
+    {% endblock %}
+    <tbody>
+    {% for product in object.products %}
+        {% block row %}
+        <tr>
+            <td>{{ product.sku }}</td>
+            <td>{{ product.price }} {{ product.currency }}</td>
+            <td>{% if product.isAvailable %}{{ 'generic.yes'|trans }}{% else %}{{ 'generic.no'|trans }}{% endif %}</td>
+            <td>{% if product.metadata.visible %}{{ 'generic.yes'|trans }}{% else %}{{ 'generic.no'|trans }}{% endif %}</td>
+        </tr>
+        {% endblock %}
+    {% endfor %}
+    </tbody>
+</table>

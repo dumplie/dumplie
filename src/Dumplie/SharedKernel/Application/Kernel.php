@@ -13,21 +13,9 @@ final class Kernel
      */
     private $extensions;
 
-    /**
-     * @var bool
-     */
-    private $built;
-
-    /**
-     * @var bool
-     */
-    private $booted;
-
     public function __construct()
     {
         $this->extensions = [];
-        $this->built = false;
-        $this->booted = false;
     }
 
     /**
@@ -55,8 +43,6 @@ final class Kernel
         foreach ($this->extensions as $extension) {
             $extension->build($container);
         }
-
-        $this->built = true;
     }
 
     /**
@@ -65,14 +51,8 @@ final class Kernel
      */
     public function boot(ServiceLocator $locator)
     {
-        if (!$this->built) {
-            throw KernelException::notBuilt();
-        }
-
         foreach ($this->extensions as $extension) {
             $extension->boot($locator);
         }
-
-        $this->booted = true;
     }
 }

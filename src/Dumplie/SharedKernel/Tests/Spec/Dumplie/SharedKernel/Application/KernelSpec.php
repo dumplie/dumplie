@@ -36,11 +36,6 @@ class KernelSpec extends ObjectBehavior
         $this->boot($locator);
     }
 
-    function it_throws_exception_when_booting_not_built_kernel(ServiceLocator $locator)
-    {
-        $this->shouldThrow(KernelException::class)->during('boot', [$locator]);
-    }
-
     function it_throws_exception_when_extension_is_missing_before_build(Extension $extension, ServiceContainer $container)
     {
         $extension->dependsOn()->willReturn([CoreExtension::class]);

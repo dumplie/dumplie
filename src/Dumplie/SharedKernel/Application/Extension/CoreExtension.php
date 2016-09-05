@@ -41,6 +41,7 @@ final class CoreExtension implements Extension
 
     /**
      * @param ServiceContainer $serviceContainer
+     * @throws ServiceNotFoundException
      */
     public function build(ServiceContainer $serviceContainer)
     {
@@ -54,11 +55,12 @@ final class CoreExtension implements Extension
 
     /**
      * @param ServiceLocator $serviceLocator
+     * @throws ServiceNotFoundException
      */
     public function boot(ServiceLocator $serviceLocator)
     {
         if (!$serviceLocator->has(Services::KERNEL_TRANSACTION_FACTORY)) {
-            throw new \RuntimeException(sprintf('Service with id "%s" is missing in service locator.', Services::KERNEL_TRANSACTION_FACTORY));
+            throw new ServiceNotFoundException(sprintf('Service with id "%s" is missing in service locator.', Services::KERNEL_TRANSACTION_FACTORY));
         }
 
         $serviceLocator->get(Services::KERNEL_COMMAND_EXTENSION_REGISTRY)

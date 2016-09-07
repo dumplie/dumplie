@@ -48,6 +48,14 @@ final class MetadataAccessObject
     }
 
     /**
+     * @return TypeSchema
+     */
+    public function typeSchema() : TypeSchema
+    {
+        return $this->typeSchema;
+    }
+
+    /**
      * @param array $criteria
      *
      * @return Metadata|null

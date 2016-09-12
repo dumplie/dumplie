@@ -22,6 +22,9 @@
         "symfony/dependency-injection": "^3.1",
         "symfony/config": "^3.1",
         "symfony/http-kernel": "^3.1",
+        "symfony/form": "^3.1",
+        "symfony/options-resolver": "^3.1",
+        "symfony/validator": "^3.1",
         "twig/twig": "^1.23"
     },
     "suggest": {

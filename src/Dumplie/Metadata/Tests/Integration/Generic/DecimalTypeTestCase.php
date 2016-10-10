@@ -9,10 +9,10 @@ use Dumplie\Metadata\Metadata;
 use Dumplie\Metadata\MetadataAccessRegistry;
 use Dumplie\Metadata\MetadataId;
 use Dumplie\Metadata\Schema;
-use Dumplie\Metadata\Schema\Field\BoolField;
+use Dumplie\Metadata\Schema\Field\DecimalField;
 use Dumplie\Metadata\Storage;
 
-abstract class BooleanTypeTestCase extends \PHPUnit_Framework_TestCase
+abstract class DecimalTypeTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Storage
@@ -40,12 +40,17 @@ abstract class BooleanTypeTestCase extends \PHPUnit_Framework_TestCase
 
         $hydrator = new DefaultHydrator($this->storage);
 
-        $this->schemaBuilder = new Schema\Builder("boolean");
+        $this->schemaBuilder = new Schema\Builder("decimal");
 
-        $productSchema = new Schema\TypeSchema("test", [
-            "without_default" => new BoolField(null, true),
-            "with_default" => new BoolField(false)
-        ]);
+        $productSchema = new Schema\TypeSchema(
+            "test",
+            [
+                "without_default" => new DecimalField(null, true),
+                "with_default" => new DecimalField(0.0),
+                "with_integer" => new DecimalField(123.0),
+                "with_float" => new DecimalField(123.456, false, ['precision' => 6, 'scale' => 3])
+            ]
+        );
         $this->schemaBuilder->addType($productSchema);
 
         $this->registry = new MetadataAccessRegistry($this->storage, $this->schemaBuilder, $hydrator);
@@ -62,10 +67,11 @@ abstract class BooleanTypeTestCase extends \PHPUnit_Framework_TestCase
 
         $metadata = $mao->getBy(['id' => (string) $id]);
 
-        $this->assertEquals(null, $metadata->without_default);
-        $this->assertEquals(false, $metadata->with_default);
+        $this->assertSame(null, $metadata->without_default);
+        $this->assertSame(0.0, $metadata->with_default);
+        $this->assertSame(123.0, $metadata->with_integer);
+        $this->assertSame(123.456, $metadata->with_float);
     }
-
 
     public function test_updating_metadata()
     {
@@ -76,13 +82,17 @@ abstract class BooleanTypeTestCase extends \PHPUnit_Framework_TestCase
 
         $metadata = $mao->getBy(['id' => (string) $id]);
 
-        $metadata->without_default = true;
+        $metadata->without_default = 0;
+        $metadata->with_integer = 123;
+        $metadata->with_float = 123.456;
 
         $mao->save($metadata);
 
         $metadata = $mao->getBy(['id' => (string) $id]);
 
-        $this->assertEquals(true, $metadata->without_default);
+        $this->assertSame(0.0, $metadata->without_default);
+        $this->assertSame(123.0, $metadata->with_integer);
+        $this->assertSame(123.456, $metadata->with_float);
     }
 
     public function tearDown()

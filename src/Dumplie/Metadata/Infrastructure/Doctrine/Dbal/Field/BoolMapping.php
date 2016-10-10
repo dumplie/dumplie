@@ -42,7 +42,5 @@ final class BoolMapping implements TypeMapping
         if ($definition->options()['index'] ?? false) {
             $table->addIndex([$name]);
         }
-
-        return true;
     }
 }

@@ -9,21 +9,8 @@ use Dumplie\Metadata\Schema\FieldDefinition;
 use Dumplie\Metadata\Schema\Type;
 use Dumplie\Metadata\Infrastructure\Doctrine\Dbal\TypeMapping;
 
-class TextMapping implements TypeMapping
+class FloatMapping implements TypeMapping
 {
-    /**
-     * @var Type
-     */
-    private $type;
-
-    /**
-     * TextMapping constructor.
-     */
-    public function __construct()
-    {
-        $this->type = new Type(Type::TYPE_TEXT);
-    }
-
     /**
      * @param Type $type
      *
@@ -31,7 +18,7 @@ class TextMapping implements TypeMapping
      */
     public function maps(Type $type): bool
     {
-        return $this->type->isEqual($type);
+        return Type::float()->isEqual($type);
     }
 
     /**
@@ -44,11 +31,10 @@ class TextMapping implements TypeMapping
     {
         $table->addColumn(
             $name,
-            'string',
+            'float',
             [
                 'notnull' => !$definition->isNullable(),
                 'default' => $definition->defaultValue(),
-                'length' => $definition->options()['length'] ?? null,
                 'unique' => $definition->options()['unique'] ?? false,
             ]
         );

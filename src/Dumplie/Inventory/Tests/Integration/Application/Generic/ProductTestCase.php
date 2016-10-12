@@ -25,7 +25,7 @@ abstract class ProductTestCase extends \PHPUnit_Framework_TestCase
     {
         $this->inventoryContext->commandBus()->handle(new CreateProduct(
             'dumplie-sku-1',
-            2000,
+            20000,
             'EUR',
             false
         ));
@@ -35,7 +35,7 @@ abstract class ProductTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             new Product(
                 new SKU('dumplie-sku-1'),
-                Price::fromInt(2000, 'EUR'),
+                Price::fromInt(200, 'EUR'),
                 false
             ),
             $product
@@ -47,7 +47,7 @@ abstract class ProductTestCase extends \PHPUnit_Framework_TestCase
         $this->inventoryContext->commandBus()
             ->handle(new CreateProduct(
                 'dumplie-sku-1',
-                2000,
+                20000,
                 'EUR',
                 true
             ));
@@ -60,7 +60,7 @@ abstract class ProductTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             new Product(
                 new SKU('dumplie-sku-1'),
-                Price::fromInt(2000, 'EUR'),
+                Price::fromInt(200, 'EUR'),
                 false
             ),
             $product
@@ -71,7 +71,7 @@ abstract class ProductTestCase extends \PHPUnit_Framework_TestCase
     {
         $this->inventoryContext->commandBus()->handle(new CreateProduct(
             'dumplie-sku-1',
-            2000,
+            20050,
             'EUR',
             true
         ));
@@ -84,7 +84,7 @@ abstract class ProductTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             new Product(
                 new SKU('dumplie-sku-1'),
-                Price::fromInt(2000, 'EUR'),
+                new Price(20050, 'EUR'),
                 true
             ),
             $product

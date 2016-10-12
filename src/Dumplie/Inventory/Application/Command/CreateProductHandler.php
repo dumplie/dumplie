@@ -33,7 +33,7 @@ final class CreateProductHandler
     {
         $this->products->add(new Product(
             new SKU($createProduct->sku()),
-            Price::fromInt($createProduct->amount(), $createProduct->currency()),
+            new Price($createProduct->amount(), $createProduct->currency(), $createProduct->precision()),
             $createProduct->isInStock()
         ));
     }

@@ -6,6 +6,7 @@ namespace Dumplie\Inventory\Application\Command;
 
 use Dumplie\SharedKernel\Application\Command\Command;
 use Dumplie\SharedKernel\Application\Command\CommandSerialize;
+use Dumplie\SharedKernel\Domain\Money\Price;
 
 final class CreateProduct implements Command
 {
@@ -32,23 +33,31 @@ final class CreateProduct implements Command
     private $isInStock;
 
     /**
+     * @var int
+     */
+    private $precision;
+
+    /**
      * CreateProduct constructor.
      *
      * @param string $sku
-     * @param int    $amount
+     * @param int $amount
      * @param string $currency
-     * @param bool   $isInStock
+     * @param bool $isInStock
+     * @param int $precision
      */
     public function __construct(
         string $sku,
         int $amount,
         string $currency,
-        bool $isInStock
+        bool $isInStock,
+        int $precision = Price::DEFAULT_PRECISION
     ) {
         $this->sku = $sku;
         $this->amount = $amount;
         $this->currency = $currency;
         $this->isInStock = $isInStock;
+        $this->precision = $precision;
     }
 
     /**
@@ -62,7 +71,7 @@ final class CreateProduct implements Command
     /**
      * @return int
      */
-    public function amount()
+    public function amount() : int
     {
         return $this->amount;
     }
@@ -81,5 +90,13 @@ final class CreateProduct implements Command
     public function isInStock(): bool
     {
         return $this->isInStock;
+    }
+
+    /**
+     * @return int
+     */
+    public function precision() : int
+    {
+        return $this->precision;
     }
 }

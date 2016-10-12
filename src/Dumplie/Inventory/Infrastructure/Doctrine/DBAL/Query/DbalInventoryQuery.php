@@ -5,6 +5,7 @@ declare (strict_types = 1);
 namespace Dumplie\Inventory\Infrastructure\Doctrine\DBAL\Query;
 
 use Doctrine\DBAL\Connection;
+use Dumplie\Inventory\Application\Exception\QueryException;
 use Dumplie\Inventory\Application\Extension\Metadata;
 use Dumplie\Inventory\Application\Query\InventoryQuery;
 use Dumplie\Inventory\Application\Query\Result\Product;
@@ -46,6 +47,34 @@ final class DbalInventoryQuery implements InventoryQuery
             ->setParameter('sku', $sku);
 
         return (bool) $this->connection->fetchColumn($qb->getSQL(), $qb->getParameters());
+    }
+
+    /**
+     * @param string $sku
+     * @return Product
+     * @throws QueryException
+     */
+    public function getBySku(string $sku) : Product
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('*')
+            ->from('dumplie_inventory_product')
+            ->where('sku = :sku')
+            ->setParameter('sku', $sku);
+
+        $productData = $this->connection->fetchAssoc($qb->getSQL(), $qb->getParameters());
+
+        if (empty($productData)) {
+            throw QueryException::productNotFound($sku);
+        }
+
+        return new Product(
+            $productData['sku'],
+            $productData['price_amount'] / $productData['price_precision'],
+            $productData['price_currency'],
+            (bool) $productData['is_in_stock'],
+            $this->mao->getBy([Metadata::FIELD_SKU => $productData['sku']])
+        );
     }
 
     /**

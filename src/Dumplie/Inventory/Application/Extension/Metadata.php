@@ -8,6 +8,7 @@ final class Metadata
 {
     const TYPE_NAME = 'inventory';
 
+    const FIELD_NAME = 'name';
     const FIELD_SKU = 'sku';
     const FIELD_VISIBLE = 'visible';
 }

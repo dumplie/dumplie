@@ -66,6 +66,7 @@ final class CoreExtension implements Extension
     {
         $serviceLocator->get(Services::KERNEL_METADATA_SCHEMA_BUILDER)
             ->addType(new TypeSchema(Metadata::TYPE_NAME, [
+                Metadata::FIELD_NAME => new TextField(''),
                 Metadata::FIELD_SKU => new TextField(),
                 Metadata::FIELD_VISIBLE => new BoolField(false, false)
             ]));

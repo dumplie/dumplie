@@ -4,6 +4,9 @@ declare (strict_types = 1);
 
 namespace Dumplie\Inventory\Application\Query;
 
+use Dumplie\Inventory\Application\Exception\QueryException;
+use Dumplie\Inventory\Application\Query\Result\Product;
+
 interface InventoryQuery
 {
     /**
@@ -11,6 +14,13 @@ interface InventoryQuery
      * @return bool
      */
     public function skuExists(string $sku) : bool;
+
+    /**
+     * @param string $sku
+     * @return Product
+     * @throws QueryException
+     */
+    public function getBySku(string $sku) : Product;
 
     /**
      * @param int $limit

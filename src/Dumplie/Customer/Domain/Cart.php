@@ -70,6 +70,10 @@ final class Cart
             throw new InvalidCurrencyException($this->currency, $product->price()->currency());
         }
 
+        if (array_key_exists((string) $product->sku(), $this->items)) {
+            $quantity += $this->items[(string) $product->sku()]->quantity();
+        }
+
         $this->items[(string) $product->sku()] = new CartItem($product->sku(), $quantity);
     }
 

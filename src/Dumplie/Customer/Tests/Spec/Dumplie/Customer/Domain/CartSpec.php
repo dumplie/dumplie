@@ -32,15 +32,14 @@ class CartSpec extends ObjectBehavior
         $this->items()->shouldHaveCount(1);
     }
 
-    function it_replace_products_with_same_sku()
+    function it_sums_products_with_same_sku()
     {
         $this->add(new Product(new SKU("DUMPLIE_SKU_1"), Price::fromInt(100, 'EUR'), true), 1);
-
         $this->add(new Product(new SKU("DUMPLIE_SKU_1"), Price::fromInt(100, 'EUR'), true), 4);
-
 
         $this->isEmpty()->shouldReturn(false);
         $this->items()->shouldHaveCount(1);
+        $this->items()["DUMPLIE_SKU_1"]->quantity(5);
     }
 
     function it_throws_exception_when_adding_product_with_different_currencies()

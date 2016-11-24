@@ -67,7 +67,7 @@ final class CartItemsType extends JsonArrayType
                 throw ConversionException::conversionFailed($value, $this->getName());
             }
 
-            $data[] = [
+            $data[(string) $item->sku()] = [
                 'sku' => (string) $item->sku(),
                 'quantity' => $item->quantity()
             ];

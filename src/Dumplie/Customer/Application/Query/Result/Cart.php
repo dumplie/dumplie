@@ -10,9 +10,19 @@ use Dumplie\Customer\Application\Query\Result\CartItem;
 final class Cart
 {
     /**
+     * @var string
+     */
+    private $currency;
+
+    /**
      * @var CartItem[]
      */
     private $items;
+
+    /**
+     * @var int
+     */
+    private $totalQuantity;
 
     /**
      * @var float
@@ -24,19 +34,30 @@ final class Cart
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(array $items = [])
+    public function __construct(string $currency, array $items = [])
     {
+        $this->currency = $currency;
         $this->totalPrice = 0;
+        $this->totalQuantity = 0;
 
         foreach ($items as $item) {
             if (!$item instanceof CartItem) {
                 throw new InvalidArgumentException();
             }
 
+            $this->totalQuantity += $item->quantity();
             $this->totalPrice += $item->price();
         }
 
         $this->items = $items;
+    }
+
+    /**
+     * @return CartItem[]
+     */
+    public function items(): array
+    {
+        return $this->items;
     }
 
     /**
@@ -45,6 +66,14 @@ final class Cart
     public function isEmpty() : bool
     {
         return !count($this->items);
+    }
+
+    /**
+     * @return int
+     */
+    public function totalQuantity(): int
+    {
+        return $this->totalQuantity;
     }
 
     /**
@@ -60,6 +89,6 @@ final class Cart
      */
     public function currency() : string
     {
-        return $this->isEmpty() ? null : $this->items[0]->currency();
+        return $this->currency;
     }
 }

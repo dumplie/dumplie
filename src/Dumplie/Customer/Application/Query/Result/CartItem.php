@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Dumplie\Customer\Application\Query\Result;
 
+use Dumplie\Metadata\Metadata;
+
 final class CartItem
 {
     /**
@@ -27,6 +29,11 @@ final class CartItem
     private $currency;
 
     /**
+     * @var Metadata
+     */
+    private $metadata;
+
+    /**
      * CartItem constructor.
      *
      * @param string $sku
@@ -34,12 +41,13 @@ final class CartItem
      * @param float  $price
      * @param string $currency
      */
-    public function __construct(string $sku, int $quantity, float $price, string $currency)
+    public function __construct(string $sku, int $quantity, float $price, string $currency, Metadata $metadata)
     {
         $this->sku = $sku;
         $this->quantity = $quantity;
         $this->price = $price;
         $this->currency = $currency;
+        $this->metadata = $metadata;
     }
 
     /**
@@ -72,5 +80,13 @@ final class CartItem
     public function currency() : string
     {
         return $this->currency;
+    }
+
+    /**
+     * @return Metadata
+     */
+    public function metadata()
+    {
+        return $this->metadata;
     }
 }

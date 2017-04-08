@@ -14,6 +14,7 @@ use Dumplie\SharedKernel\Application\Extension;
 use Dumplie\SharedKernel\Application\ServiceContainer;
 use Dumplie\SharedKernel\Application\ServiceLocator;
 use Dumplie\SharedKernel\Application\Services;
+use Dumplie\SharedKernel\Infrastructure\InMemory\InMemoryEventLog;
 use Dumplie\SharedKernel\Infrastructure\InMemory\InMemoryHandlerMap;
 
 final class CoreExtension implements Extension
@@ -48,6 +49,10 @@ final class CoreExtension implements Extension
         if (!$serviceContainer->definitionExists(Services::KERNEL_SERVICE_LOCATOR)) {
             throw new ServiceNotFoundException(sprintf('Service with id "%s" is missing in service container.', Services::KERNEL_SERVICE_LOCATOR));
         }
+
+        $serviceContainer->register(Services::KERNEL_EVENT_LOG, new ServiceContainer\Definition(
+           InMemoryEventLog::class
+        ));
 
         $this->registerCommandServices($serviceContainer);
         $this->registerMetadataServices($serviceContainer);

@@ -25,4 +25,14 @@ class QueryException extends Exception
     {
         return new self(sprintf("Cart item with SKY \"%s\" does not exists.", $sku));
     }
+
+    /**
+     * @param $cartId
+     *
+     * @return QueryException
+     */
+    public static function checkoutNotFound($cartId) : QueryException
+    {
+        return new self(sprintf("Checkout with id \"%s\" does not exists.", $cartId));
+    }
 }

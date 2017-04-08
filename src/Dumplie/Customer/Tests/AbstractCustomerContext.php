@@ -150,6 +150,22 @@ abstract class AbstractCustomerContext implements CustomerContext
         return $cartId;
     }
 
+    public function createNewCheckoutFromCart(CartId $cartId) : CartId
+    {
+        $command = new NewCheckout(
+            (string) $cartId,
+            'Joe Dean Anderson',
+            'Street Avenue',
+            '10-10',
+            'Somewhereshire',
+            'UK'
+        );
+
+        $this->commandBus->handle($command);
+
+        return $cartId;
+    }
+
     /**
      * @param EventLog $eventLog
      * @param CommandBusFactory $commandBusFactory

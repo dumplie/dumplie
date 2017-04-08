@@ -7,6 +7,7 @@ namespace Dumplie\SharedKernel\Application;
 final class Services
 {
     const KERNEL_SERVICE_LOCATOR = 'dumplie.shared_kernel.service.locator';
+    const KERNEL_EVENT_LOG = 'dumplie.shared_kernel.event.log';
 
     const KERNEL_COMMAND_BUS = 'dumplie.shared_kernel.command.bus';
     const KERNEL_COMMAND_HANDLER_MAP = 'dumplie.shared_kernel.command.handler_map';

@@ -8,7 +8,10 @@ use Dumplie\Customer\Application\Extension\CoreExtension;
 use Dumplie\Customer\Application\Services;
 use Dumplie\Customer\Infrastructure\Doctrine\Dbal\Domain\DbalProducts;
 use Dumplie\Customer\Infrastructure\Doctrine\Dbal\Query\DbalCartQuery;
+use Dumplie\Customer\Infrastructure\Doctrine\Dbal\Query\DbalCheckoutQuery;
 use Dumplie\Customer\Infrastructure\Doctrine\ORM\Domain\ORMCarts;
+use Dumplie\Customer\Infrastructure\Doctrine\ORM\Domain\ORMCheckouts;
+use Dumplie\Customer\Infrastructure\Doctrine\ORM\Domain\ORMOrders;
 use Dumplie\SharedKernel\Application\Extension;
 use Dumplie\SharedKernel\Application\ServiceContainer;
 use Dumplie\SharedKernel\Application\ServiceContainer\ArgumentService;
@@ -58,6 +61,13 @@ final class DoctrineExtension implements Extension
         );
 
         $serviceContainer->register(
+            Services::CUSTOMER_CHECKOUT_QUERY,
+            new ServiceContainer\Definition(DbalCheckoutQuery::class, [
+                new ServiceContainer\ArgumentService($this->connectionServiceId)
+            ])
+        );
+
+        $serviceContainer->register(
             Services::CUSTOMER_DOMAIN_PRODUCTS,
             new ServiceContainer\Definition(DbalProducts::class, [
                 new ServiceContainer\ArgumentService($this->connectionServiceId),
@@ -67,6 +77,22 @@ final class DoctrineExtension implements Extension
         $serviceContainer->register(
             Services::CUSTOMER_DOMAIN_CARTS,
             new ServiceContainer\Definition(ORMCarts::class, [
+                    new ArgumentService($this->entityManagerServiceId)
+                ]
+            )
+        );
+
+        $serviceContainer->register(
+            Services::CUSTOMER_DOMAIN_CHECKOUTS,
+            new ServiceContainer\Definition(ORMCheckouts::class, [
+                    new ArgumentService($this->entityManagerServiceId)
+                ]
+            )
+        );
+
+        $serviceContainer->register(
+            Services::CUSTOMER_DOMAIN_ORDERS,
+            new ServiceContainer\Definition(ORMOrders::class, [
                     new ArgumentService($this->entityManagerServiceId)
                 ]
             )
